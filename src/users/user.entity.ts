@@ -60,15 +60,10 @@ export class User {
   })
   resetTokenExpirationDate: Date;
 
-  // @OneToOne(() => UserImage, (userImage) => userImage.user, { nullable: true }) // One-to-one relation with UserImage
-  // @JoinColumn({ name: 'userImageId' }) // Join column on User table
-  // userImage: UserImage;
-
-  // @OneToOne((type) => UserImage, (UserImage) => UserImage.user)
-  // @JoinColumn()
-  // userImage: UserImage;
-
-  @OneToOne((type) => UserImage)
+  @OneToOne((type) => UserImage, {
+    onDelete: 'CASCADE',
+    onUpdate: 'NO ACTION',
+  })
   @JoinColumn()
   userImage: UserImage;
 

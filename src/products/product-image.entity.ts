@@ -24,7 +24,10 @@ export class ProductImage {
   })
   imagePublicId: string;
 
-  @ManyToOne(() => Product, (product) => product.productScreenshots)
+  @ManyToOne(() => Product, (product) => product.productScreenshots, {
+    onDelete: 'CASCADE',
+    onUpdate: 'NO ACTION',
+  })
   product: Product;
 
   @CreateDateColumn({
