@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Multer } from 'multer';
+import { CategoriesService } from 'src/categories/categories.service';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
+import { GetAllProductsQueryDto } from './dto/get-all-products-query.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductImage } from './product-image.entity';
 import { Product } from './product.entity';
@@ -20,6 +22,7 @@ export class ProductsService {
     @InjectRepository(ProductImage)
     private readonly productsImagesRepository: Repository<ProductImage>,
     private readonly fileUploadService: FileUploadService,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
   public async getProduct(productId: number) {
@@ -38,6 +41,39 @@ export class ProductsService {
     });
   }
 
+  public async getAllProducts(query: GetAllProductsQueryDto) {
+    if (query.category) {
+      const isCategoryExists = await this.categoriesService.isCategoryExists(
+        query.category,
+      );
+
+      if (!isCategoryExists) {
+        throw new NotFoundException('Category not Found!');
+      }
+    }
+
+    const queryBuilder = this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.productScreenshots', 'productScreenshots');
+
+    if (query.category) {
+      queryBuilder.where('product.categoryId = :categoryId', {
+        categoryId: query.category,
+      });
+    }
+
+    if (query.sortBy) {
+      queryBuilder.orderBy(
+        `product.${query.sortBy}`,
+        query.order || ('ASC' as any),
+      );
+    }
+
+    const products = await queryBuilder.getMany();
+
+    return products;
+  }
+
   public async isProductExists(productId: number) {
     return await this.productsRepository.exists({
       where: {
@@ -50,9 +86,22 @@ export class ProductsService {
     productData: CreateProductDto,
     productScreenshots: Array<Express.Multer.File>,
   ) {
+    const isCategoryExists = await this.categoriesService.isCategoryExists(
+      productData.categoryId,
+    );
+
+    if (!isCategoryExists) {
+      throw new NotFoundException('Category not Found!');
+    }
+
+    const targetCategory = await this.categoriesService.getSingleCategory(
+      productData.categoryId,
+    );
+
     const createdProduct = await this.productsRepository.create({
       ...productData,
       productScreenshots: [],
+      category: targetCategory,
     });
 
     if (productScreenshots.length > 0) {

@@ -34,6 +34,27 @@ interface IUpdateUser extends Partial<ICreateUser> {
   resetTokenExpirationDate?: Date;
 }
 
+enum ISortAttributes {
+  createdAt = 'createdAt',
+}
+
+enum IFilterAttributes {
+  verified = 'verified',
+}
+
+enum IOrder {
+  ASC = 'asc',
+  DSC = 'desc',
+}
+
+interface IGetUsersQuery {
+  page: number;
+  limit: number;
+  sort: ISortAttributes;
+  filter: IFilterAttributes;
+  order: IOrder;
+}
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -42,6 +63,36 @@ export class UsersService {
     private readonly userImageRepository: Repository<UserImage>,
     private readonly fileUploadService: FileUploadService,
   ) {}
+  public async getAllUsers({
+    page,
+    limit,
+    order,
+    filter,
+    sort,
+  }: IGetUsersQuery) {
+    return await this.usersRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+
+      where: {
+        verified: filter === IFilterAttributes.verified && true,
+      },
+
+      order: {
+        createdAt: ISortAttributes.createdAt ? (order ? order : 'desc') : null,
+      },
+    });
+  }
+
+  public async getSingleUser(userId: number) {
+    return await this.usersRepository.findOne({
+      where: {
+        id: userId,
+      },
+
+      relations: ['userImage'],
+    });
+  }
 
   public async createUser(
     userData: ICreateUser,
@@ -53,7 +104,6 @@ export class UsersService {
 
       createdUser.userImage = createdImage;
 
-      await this.userImageRepository.save(createdImage);
       return await this.usersRepository.save(createdUser);
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
@@ -163,5 +213,37 @@ export class UsersService {
       console.error(`Internal Server Error: ${error}`);
       throw new InternalServerErrorException('Internal server error.');
     }
+  }
+
+  public async findUser(userId: number) {
+    try {
+      return await this.usersRepository.findOne({
+        where: {
+          id: userId,
+        },
+      });
+    } catch (error) {
+      console.error(`Internal Server Error: ${error}`);
+      throw new InternalServerErrorException('Internal server error.');
+    }
+  }
+
+  public async deleteUser(userId: number) {
+    const targetUser = await this.usersRepository.findOne({
+      where: {
+        id: userId,
+      },
+      relations: ['userImage'],
+    });
+
+    if (!targetUser) {
+      throw new NotFoundException('User not found.');
+    }
+
+    await this.fileUploadService.removeImage(
+      targetUser.userImage.imagePublicId,
+    );
+
+    return await this.usersRepository.remove(targetUser);
   }
 }

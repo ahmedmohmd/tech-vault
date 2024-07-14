@@ -6,6 +6,7 @@ import {
   InternalServerErrorException,
   Post,
   Query,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -51,8 +52,8 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  public async googleAuth(@User() user) {
-    return await this.authService.authWithGoogle(user);
+  public async googleAuth(@User() user, @Res() res) {
+    return await this.authService.authWithGoogle(user, res);
   }
 
   @Post('request-password-reset')

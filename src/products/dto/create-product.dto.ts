@@ -10,4 +10,7 @@ export class CreateProductDto {
 
   @IsNumberString()
   price: number;
+
+  @IsNumberString()
+  categoryId: number;
 }

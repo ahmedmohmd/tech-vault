@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { UploadImages } from 'src/common/decorators/upload-image/upload-images.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
+import { GetAllProductsQueryDto } from './dto/get-all-products-query.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
@@ -22,6 +23,11 @@ export class ProductsController {
   @Get(':productId')
   public async getProduct(@Param('productId', ParseIntPipe) productId: number) {
     return await this.productsService.getProduct(productId);
+  }
+
+  @Get()
+  public async getAllProducts(@Query() query: GetAllProductsQueryDto) {
+    return await this.productsService.getAllProducts(query);
   }
 
   @UploadImages('productScreenshots', 4)

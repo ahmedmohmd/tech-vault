@@ -2,9 +2,11 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import { BcryptService } from '../bcrypt/bcrypt.service';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { MailService } from '../mail/mail.service';
@@ -62,7 +64,7 @@ export class AuthService {
 
     const { public_id, secure_url } = await this.fileUploadService.uploadImage({
       file: userImage,
-      path: 'e-commerce/users-images',
+      path: 'e-commerce/images/users-images',
     });
 
     const createdUser = await this.usersService.createUser(customUserData, {
@@ -100,7 +102,7 @@ export class AuthService {
   public async signIn({ email, password }: ISignIn) {
     const targetUser = await this.usersService.findUserByEmail(email);
 
-    if (!targetUser) throw new BadRequestException("User doesn't exists.");
+    if (!targetUser) throw new NotFoundException("User doesn't exists.");
 
     const isCorrectPassword = await this.bcryptService.comparePassword(
       password,
@@ -141,12 +143,10 @@ export class AuthService {
     };
   }
 
-  public async authWithGoogle({
-    email,
-    firstName,
-    lastName,
-    picture,
-  }: IGoogleUser) {
+  public async authWithGoogle(
+    { email, firstName, lastName, picture }: IGoogleUser,
+    res: Response,
+  ) {
     const isUserExists = await this.usersService.isUserExists(email);
 
     if (isUserExists) {
@@ -158,9 +158,7 @@ export class AuthService {
 
       const jwtToken = await this.jwtService.sign(payload);
 
-      return {
-        jwtToken,
-      };
+      return res.redirect(`http://localhost:5173/google/redirect/${jwtToken}`);
     }
 
     const createdUser = await this.usersService.createUser(
@@ -183,9 +181,7 @@ export class AuthService {
 
     const jwtToken = await this.jwtService.sign(payload);
 
-    return {
-      jwtToken,
-    };
+    return res.redirect(`http://localhost:5173/google/redirect/${jwtToken}`);
   }
 
   public async requestPasswordReset(email: string) {
@@ -217,7 +213,7 @@ export class AuthService {
       context: {
         firstName: targetUser.firstName,
         lastName: targetUser.lastName,
-        resetLink: `${this.configService.get<string>('BASE_URL')}/auth/reset-password/?resetToken=${resetToken}`,
+        resetLink: `${this.configService.get<string>('FRONT_END')}/reset-password/${resetToken}`,
         email: targetUser.email,
       },
     };

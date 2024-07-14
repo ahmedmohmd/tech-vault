@@ -1,29 +1,30 @@
+import { Product } from 'src/products/product.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 
 @Entity({
-  name: 'users_images',
+  name: 'categories',
 })
-export class UserImage {
+export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  url: string;
+  name: string;
 
   @Column({
     nullable: true,
-    default: null,
   })
-  imagePublicId: string;
+  description: string;
+
+  @OneToMany(() => Product, (product) => product.category)
+  products: Product[];
 
   @CreateDateColumn({
     type: 'timestamp',

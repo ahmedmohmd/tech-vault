@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 
 export class UserDto {
   @Expose()
@@ -13,8 +13,9 @@ export class UserDto {
   @Expose()
   email: string;
 
+  @Transform(({ obj }) => obj.userImage.url)
   @Expose()
-  userImage: any;
+  userImage: string;
 
   @Expose()
   createdAt: Date;

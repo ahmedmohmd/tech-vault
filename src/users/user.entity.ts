@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { BcryptService } from 'src/bcrypt/bcrypt.service';
 
+import { Order } from 'src/orders/order.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -8,10 +9,12 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Role } from './enums/user-role.enum';
 import { UserImage } from './user-image.entity';
 
 @Entity({
@@ -60,12 +63,18 @@ export class User {
   })
   resetTokenExpirationDate: Date;
 
-  @OneToOne((type) => UserImage, {
+  @OneToOne(() => UserImage, {
     onDelete: 'CASCADE',
     onUpdate: 'NO ACTION',
+    cascade: true,
   })
   @JoinColumn()
   userImage: UserImage;
+
+  @OneToMany(() => Order, (order) => order.user, {
+    cascade: true,
+  })
+  orders: Order[];
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -76,6 +85,12 @@ export class User {
     type: 'timestamp',
   })
   updatedAt: Date;
+
+  @Column({
+    enum: Role,
+    default: Role.USER,
+  })
+  role: Role;
 
   @BeforeInsert()
   @BeforeUpdate()
