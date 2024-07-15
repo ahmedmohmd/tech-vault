@@ -11,7 +11,7 @@ import {
   UploadedFile,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UploadImage } from 'src/common/decorators/upload-image/upload-image.decorator';
 import { User } from 'src/common/decorators/user/user.decorator';
 import { Serialize } from 'src/common/interceptors/serialize/serialize.decorator';

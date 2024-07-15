@@ -11,27 +11,10 @@ import { BcryptService } from '../bcrypt/bcrypt.service';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { MailService } from '../mail/mail.service';
 import { UsersService } from '../users/users.service';
+import { SignInDto } from './dto/sign-in.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 import { RandomTokenService } from './random-token.service';
-
-// Types & Interfaces
-interface ICreateUser {
-  firstName: string;
-  lastName?: string;
-  email: string;
-  password: string;
-}
-
-interface ISignIn {
-  email: string;
-  password: string;
-}
-
-interface IGoogleUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  picture: string;
-}
+import { IGoogleUser } from './types/google-user';
 
 @Injectable()
 export class AuthService {
@@ -46,7 +29,7 @@ export class AuthService {
   ) {}
 
   public async signUpWithCredentials(
-    userData: ICreateUser,
+    userData: SignUpDto,
     userImage: Express.Multer.File,
   ) {
     const customUserData = Object.assign(userData, {
@@ -93,13 +76,17 @@ export class AuthService {
     };
 
     const jwtToken = await this.jwtService.sign(payload);
+    const refreshToken = await this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
 
     return {
       jwtToken,
+      jwtRefreshToken: refreshToken,
     };
   }
 
-  public async signIn({ email, password }: ISignIn) {
+  public async signIn({ email, password }: SignInDto) {
     const targetUser = await this.usersService.findUserByEmail(email);
 
     if (!targetUser) throw new NotFoundException("User doesn't exists.");
@@ -117,9 +104,13 @@ export class AuthService {
     };
 
     const jwtToken = await this.jwtService.sign(payload);
+    const refreshToken = await this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
 
     return {
       jwtToken,
+      jwtRefreshToken: refreshToken,
     };
   }
 
@@ -180,8 +171,13 @@ export class AuthService {
     };
 
     const jwtToken = await this.jwtService.sign(payload);
+    const refreshToken = await this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
 
-    return res.redirect(`http://localhost:5173/google/redirect/${jwtToken}`);
+    return res.redirect(
+      `${this.configService.get<string>('FRONT_END_ENDPOINT')}/google/redirect/?jwtToken=${jwtToken}&jwtRefreshToken=${refreshToken}`,
+    );
   }
 
   public async requestPasswordReset(email: string) {

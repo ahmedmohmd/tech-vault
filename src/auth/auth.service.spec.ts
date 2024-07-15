@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BcryptService } from '../bcrypt/bcrypt.service';
+import { FileUploadService } from '../file-upload/file-upload.service';
 import { MailService } from '../mail/mail.service';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
@@ -39,6 +40,10 @@ describe('AuthService', () => {
         },
         {
           provide: RandomTokenService,
+          useValue: {},
+        },
+        {
+          provide: FileUploadService,
           useValue: {},
         },
       ],

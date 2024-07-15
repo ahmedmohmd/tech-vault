@@ -1,7 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { BcryptService } from 'src/bcrypt/bcrypt.service';
 
-import { Order } from 'src/orders/order.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -14,6 +13,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Cart } from '../cart/cart.entity';
+import { Order } from '../orders/order.entity';
 import { Role } from './enums/user-role.enum';
 import { UserImage } from './user-image.entity';
 
@@ -75,6 +76,9 @@ export class User {
     cascade: true,
   })
   orders: Order[];
+
+  @OneToMany(() => Cart, (cart) => cart.user, { cascade: true })
+  carts: Cart[];
 
   @CreateDateColumn({
     type: 'timestamp',

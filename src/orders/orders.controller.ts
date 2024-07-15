@@ -9,7 +9,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Serialize } from '../common/interceptors/serialize/serialize.decorator';
 import { Roles } from '../users/decorators/roles.decorator';
 import { Role } from '../users/enums/user-role.enum';

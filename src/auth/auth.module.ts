@@ -21,7 +21,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     MailModule,
     PassportModule,
     FileUploadModule,
-
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),

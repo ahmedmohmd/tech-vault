@@ -18,12 +18,12 @@ export class OrderDto {
   @Expose()
   updatedAt: Date;
 
-  @Transform(({ obj }) =>
-    obj.items.map((item) => ({
-      itemId: item.id,
-      productId: item.product.id,
-    })),
-  )
+  // @Transform(({ obj }) =>
+  //   obj.items.map((item) => ({
+  //     itemId: item.id,
+  //     productId: item.product.id,
+  //   })),
+  // )
   @Expose()
   items: OrderItem[];
 

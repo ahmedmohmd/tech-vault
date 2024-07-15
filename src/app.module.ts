@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { BcryptModule } from './bcrypt/bcrypt.module';
 import { BcryptService } from './bcrypt/bcrypt.service';
+import { CartItem } from './cart/cart-item.entity';
+import { Cart } from './cart/cart.entity';
+import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/category.entity';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
@@ -21,6 +24,7 @@ import { ProductsModule } from './products/products.module';
 import { UserImage } from './users/user-image.entity';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
+import { InvoicesModule } from './invoices/invoices.module';
 
 @Module({
   providers: [BcryptService, CloudinaryService],
@@ -47,6 +51,8 @@ import { UsersModule } from './users/users.module';
         Category,
         Order,
         OrderItem,
+        Cart,
+        CartItem,
       ],
       synchronize: true,
     }),
@@ -55,6 +61,8 @@ import { UsersModule } from './users/users.module';
     CategoriesModule,
     OrdersModule,
     PaymentsModule,
+    CartModule,
+    InvoicesModule,
   ],
 })
 export class AppModule {}

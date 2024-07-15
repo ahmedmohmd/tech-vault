@@ -9,7 +9,6 @@ export class SignUpDto {
   @IsString()
   firstName: string;
 
-  @IsOptional()
   @IsString()
   lastName: string;
 

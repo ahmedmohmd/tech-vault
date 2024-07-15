@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -9,17 +8,15 @@ import {
   Res,
   UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadImage } from 'src/common/decorators/upload-image/upload-image.decorator';
+import { UploadImage } from '../common/decorators/upload-image/upload-image.decorator';
 import { User } from '../common/decorators/user/user.decorator';
 import { AuthService } from './auth.service';
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignInDto } from './dto/sign-in.dto';
-import { SignUpDto } from './dto/signUp.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Controller('auth')
 export class AuthController {
