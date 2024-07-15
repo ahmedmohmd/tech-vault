@@ -14,6 +14,7 @@ import { OrderItemsModule } from './order-items/order-items.module';
 import { OrderItem } from './orders/order-item.entity';
 import { Order } from './orders/order.entity';
 import { OrdersModule } from './orders/orders.module';
+import { PaymentsModule } from './payments/payments.module';
 import { ProductImage } from './products/product-image.entity';
 import { Product } from './products/product.entity';
 import { ProductsModule } from './products/products.module';
@@ -53,6 +54,7 @@ import { UsersModule } from './users/users.module';
     ProductsModule,
     CategoriesModule,
     OrdersModule,
+    PaymentsModule,
   ],
 })
 export class AppModule {}

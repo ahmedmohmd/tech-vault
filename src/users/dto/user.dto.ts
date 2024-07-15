@@ -13,7 +13,7 @@ export class UserDto {
   @Expose()
   email: string;
 
-  @Transform(({ obj }) => obj.userImage.url)
+  @Transform(({ obj }) => obj.userImage?.url)
   @Expose()
   userImage: string;
 
