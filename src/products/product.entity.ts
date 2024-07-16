@@ -1,5 +1,6 @@
 import { Category } from 'src/categories/category.entity';
 import { OrderItem } from 'src/orders/order-item.entity';
+import { Review } from 'src/reviews/review.entity';
 import {
   Column,
   CreateDateColumn,
@@ -29,6 +30,9 @@ export class Product {
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product)
   productScreenshots: ProductImage[];
+
+  @OneToMany(() => Review, (review) => review.product)
+  reviews: Review[];
 
   @ManyToOne(() => Category, (category) => category.products, {
     onDelete: 'SET NULL',

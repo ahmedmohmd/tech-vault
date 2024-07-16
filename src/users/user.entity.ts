@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
-import { BcryptService } from 'src/bcrypt/bcrypt.service';
 
+import { Notification } from 'src/notifications/notification.entity';
+import { Review } from 'src/reviews/review.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -76,6 +77,16 @@ export class User {
     cascade: true,
   })
   orders: Order[];
+
+  @OneToMany(() => Review, (review) => review.user, {
+    cascade: true,
+  })
+  reviews: Review[];
+
+  @OneToMany(() => Notification, (notification) => notification.user, {
+    cascade: true,
+  })
+  notifications: Notification[];
 
   @OneToMany(() => Cart, (cart) => cart.user, { cascade: true })
   carts: Cart[];

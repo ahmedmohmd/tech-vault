@@ -37,7 +37,7 @@ export class ProductsService {
         id: productId,
       },
 
-      relations: ['productScreenshots'],
+      relations: ['productScreenshots', 'reviews', 'category'],
     });
   }
 

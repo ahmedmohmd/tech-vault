@@ -12,6 +12,7 @@ import { Category } from './categories/category.entity';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { InvoicesModule } from './invoices/invoices.module';
 import { MailModule } from './mail/mail.module';
 import { OrderItemsModule } from './order-items/order-items.module';
 import { OrderItem } from './orders/order-item.entity';
@@ -21,10 +22,12 @@ import { PaymentsModule } from './payments/payments.module';
 import { ProductImage } from './products/product-image.entity';
 import { Product } from './products/product.entity';
 import { ProductsModule } from './products/products.module';
+import { Review } from './reviews/review.entity';
+import { ReviewsModule } from './reviews/reviews.module';
 import { UserImage } from './users/user-image.entity';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
-import { InvoicesModule } from './invoices/invoices.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   providers: [BcryptService, CloudinaryService],
@@ -53,6 +56,7 @@ import { InvoicesModule } from './invoices/invoices.module';
         OrderItem,
         Cart,
         CartItem,
+        Review,
       ],
       synchronize: true,
     }),
@@ -63,6 +67,8 @@ import { InvoicesModule } from './invoices/invoices.module';
     PaymentsModule,
     CartModule,
     InvoicesModule,
+    ReviewsModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
