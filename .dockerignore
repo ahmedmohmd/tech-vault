@@ -1,0 +1,21 @@
+# Ignore the local modules folder
+node_modules
+
+# Ignore the build output directory
+dist
+
+# Ignore other unnecessary files and directories
+test.txt
+features.txt
+invoices
+test
+docker-compose.yaml
+
+# Optional: You might want to include the following files in the image if they are needed at runtime
+# nest-cli.json
+# tsconfig.json
+# tsconfig.build.json
+# package-lock.json
+# README.md
+
+
