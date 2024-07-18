@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { BcryptModule } from './bcrypt/bcrypt.module';
@@ -42,30 +42,35 @@ import { WishlistModule } from './wishlist/wishlist.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5433,
-      username: 'postgres',
-      password: '95123574',
-      database: 'e-commerce',
-      entities: [
-        User,
-        UserImage,
-        Product,
-        ProductImage,
-        Category,
-        Order,
-        OrderItem,
-        Cart,
-        CartItem,
-        Review,
-        Notification,
-        PromoCode,
-        Wishlist,
-      ],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DATABASE_HOST'),
+        port: parseInt(configService.get('DATABASE_PORT'), 10) || 5432,
+        username: configService.get('DATABASE_USER'),
+        password: configService.get('DATABASE_PASSWORD'),
+        database: configService.get('DATABASE_NAME'),
+        entities: [
+          User,
+          UserImage,
+          Product,
+          ProductImage,
+          Category,
+          Order,
+          OrderItem,
+          Cart,
+          CartItem,
+          Review,
+          Notification,
+          PromoCode,
+          Wishlist,
+        ],
+        synchronize: true,
+      }),
     }),
+
     CloudinaryModule,
     ProductsModule,
     CategoriesModule,
