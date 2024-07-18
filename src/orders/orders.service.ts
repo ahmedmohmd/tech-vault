@@ -1,11 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PromoCodesService } from 'src/promo-codes/promocodes.service';
-import { Code, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ProductsService } from '../products/products.service';
 import { UsersService } from '../users/users.service';
 import { CreateOrderDto } from './dto/create-order.dto';

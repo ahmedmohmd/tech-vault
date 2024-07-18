@@ -1,5 +1,3 @@
-import { Transform } from 'class-transformer';
-import { ColumnNumericTransformer } from 'src/common/transfomers/numiric.transformer';
 import {
   Column,
   Entity,
@@ -7,7 +5,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Product } from '../products/product.entity';
 import { User } from '../users/user.entity';
 import { CartItem } from './cart-item.entity';
 

@@ -1,15 +1,10 @@
-import { Transform } from 'class-transformer';
-import { Category } from 'src/categories/category.entity';
-import { ColumnNumericTransformer } from 'src/common/transfomers/numiric.transformer';
 import { Order } from 'src/orders/order.entity';
 import { Product } from 'src/products/product.entity';
-import { User } from 'src/users/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';

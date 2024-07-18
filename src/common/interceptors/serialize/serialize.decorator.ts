@@ -2,7 +2,7 @@ import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors
 import { SerializeInterceptor } from './serialize.interceptor';
 
 interface IDto {
-  new (...args: any[]): {};
+  new (...args: any[]): object;
 }
 
 export const Serialize = (dto: IDto) =>

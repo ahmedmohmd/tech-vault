@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Multer } from 'multer';
 import { CategoriesService } from 'src/categories/categories.service';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
 import { Repository } from 'typeorm';

@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotFoundError } from 'rxjs';
 import { OrdersService } from 'src/orders/orders.service';
 import { PaymentsService } from 'src/payments/payments.service';
 import { ProductsService } from 'src/products/products.service';
@@ -101,7 +100,7 @@ export class CartService {
     { quantity }: UpdateCartItemDto,
   ) {
     const targetCart = await this.findOrCreateCart(userId);
-    let itemFromCart = targetCart.items.find((item) => item.id === itemId);
+    const itemFromCart = targetCart.items.find((item) => item.id === itemId);
 
     if (!itemFromCart) {
       throw new NotFoundException('Cart Item not found.');

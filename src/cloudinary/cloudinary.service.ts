@@ -1,5 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
 import {
   v2 as cloudinary,
   DeleteApiResponse,

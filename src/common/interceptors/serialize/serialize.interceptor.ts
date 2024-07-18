@@ -8,7 +8,7 @@ import { plainToInstance } from 'class-transformer';
 import { Observable, map } from 'rxjs';
 
 interface IDto {
-  new (...args: any[]): {};
+  new (...args: any[]): object;
 }
 
 @Injectable()

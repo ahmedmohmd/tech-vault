@@ -141,7 +141,7 @@ export class AuthService {
     const isUserExists = await this.usersService.isUserExists(email);
 
     if (isUserExists) {
-      let targetUser = await this.usersService.findUserByEmail(email);
+      const targetUser = await this.usersService.findUserByEmail(email);
 
       const payload = {
         userId: targetUser.id,

@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import MicroInvoice from '@twosdai/microinvoice';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { OrdersService } from 'src/orders/orders.service';

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from 'src/products/products.module';
-import { PromoCodesModule } from 'src/promo-codes/promocodes.module';
 import { UsersModule } from 'src/users/users.module';
 import { OrderItem } from './order-item.entity';
 import { Order } from './order.entity';

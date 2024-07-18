@@ -8,7 +8,6 @@ import { Repository } from 'typeorm';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { GetAllUsersQueryDto } from './dto/get-all-users-query.dto';
 import { ISortAttributes } from './enums/query-params.enum';
-import { IGetUsersQuery } from './types/query-params.type';
 import { UserImage } from './user-image.entity';
 import { User } from './user.entity';
 
@@ -17,7 +16,7 @@ interface ICreateUserImage {
   imagePublicId?: string;
 }
 
-interface IUpdateUserImage extends Partial<ICreateUserImage> {}
+// interface IUpdateUserImage extends Partial<ICreateUserImage> {}
 
 interface ICreateUser {
   firstName: string;
