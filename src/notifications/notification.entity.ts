@@ -1,7 +1,16 @@
 import { User } from 'src/users/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity({
+  name: 'notifications',
+})
 export class Notification {
   @PrimaryGeneratedColumn()
   id: number;
@@ -9,9 +18,22 @@ export class Notification {
   @Column()
   message: string;
 
-  @ManyToOne(() => User, (user) => user.notifications)
+  @ManyToOne(() => User, (user) => user.notifications, {
+    onDelete: 'CASCADE',
+    onUpdate: 'NO ACTION',
+  })
   user: User;
 
   @Column({ default: false })
   read: boolean;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+  })
+  updatedAt: Date;
 }

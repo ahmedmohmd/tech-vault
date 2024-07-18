@@ -34,8 +34,13 @@ export class PaymentsService {
       throw new BadRequestException('Order not found');
     }
 
+    const orderTotalPrice =
+      order.total <= order.discount
+        ? 0
+        : Math.round(order.total - order.discount);
+
     const paymentIntent = await this.stripe.paymentIntents.create({
-      amount: Math.round(order.total * 100), // Stripe amount is in cents
+      amount: orderTotalPrice * 100, // Stripe amount is in cents
       currency: 'usd',
       metadata: { orderId: order.id.toString() },
     });

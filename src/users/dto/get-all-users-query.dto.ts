@@ -1,39 +1,38 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-
-enum ISortAttributes {
-  createdAt = 'createdAt',
-}
-
-enum IFilterAttributes {
-  verified = 'verified',
-}
-
-enum IOrder {
-  ASC = 'asc',
-  DSC = 'desc',
-}
+import {
+  IsBooleanString,
+  IsEnum,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { IOrder, ISortAttributes } from '../enums/query-params.enum';
 
 export class GetAllUsersQueryDto {
   @IsOptional()
-  @IsString()
+  @IsNumberString()
+  @IsNotEmpty()
   page: string;
 
   @IsOptional()
-  @IsString()
+  @IsNotEmpty()
+  @IsNumberString()
   limit: string;
 
   @IsOptional()
+  @IsNotEmpty()
   @IsEnum(ISortAttributes)
   @IsString()
   sortBy: ISortAttributes;
 
   @IsOptional()
+  @IsNotEmpty()
   @IsEnum(IOrder)
   @IsString()
   order: IOrder;
 
+  @IsNotEmpty()
   @IsOptional()
-  @IsEnum(IFilterAttributes)
-  @IsString()
-  filterBy: IFilterAttributes;
+  @IsBooleanString()
+  verified: string;
 }

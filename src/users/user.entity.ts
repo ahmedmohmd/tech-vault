@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 
 import { Notification } from 'src/notifications/notification.entity';
 import { Review } from 'src/reviews/review.entity';
+import { Wishlist } from 'src/wishlist/wishlist.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -87,6 +88,11 @@ export class User {
     cascade: true,
   })
   notifications: Notification[];
+
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.user, {
+    cascade: true,
+  })
+  wishlist: Wishlist[];
 
   @OneToMany(() => Cart, (cart) => cart.user, { cascade: true })
   carts: Cart[];

@@ -1,6 +1,7 @@
 import { Category } from 'src/categories/category.entity';
 import { OrderItem } from 'src/orders/order-item.entity';
 import { Review } from 'src/reviews/review.entity';
+import { Wishlist } from 'src/wishlist/wishlist.entity';
 import {
   Column,
   CreateDateColumn,
@@ -30,6 +31,11 @@ export class Product {
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product)
   productScreenshots: ProductImage[];
+
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.user, {
+    cascade: true,
+  })
+  wishlist: Wishlist[];
 
   @OneToMany(() => Review, (review) => review.product)
   reviews: Review[];

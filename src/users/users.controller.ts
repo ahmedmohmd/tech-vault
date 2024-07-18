@@ -20,7 +20,6 @@ import { GetAllUsersQueryDto } from './dto/get-all-users-query.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { Role } from './enums/user-role.enum';
-import { RolesGuard } from './guards/roles/roles.guard';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -29,18 +28,10 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Serialize(UserDto)
-  @Roles(Role.USER)
+  @Roles(Role.ADMIN)
   @Get()
-  public async getAllUsers(@User() user, @Query() query: GetAllUsersQueryDto) {
-    const q = {
-      limit: +query.limit,
-      page: +query.page,
-      filter: query.filterBy,
-      sort: query.sortBy,
-      order: query.order,
-    };
-
-    return await this.usersService.getAllUsers(q as any);
+  public async getAllUsers(@Query() query: GetAllUsersQueryDto) {
+    return await this.usersService.getAllUsers(query);
   }
 
   @Get('/me')

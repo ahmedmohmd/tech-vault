@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { PromoCodesService } from 'src/promo-codes/promocodes.service';
+import { Code, Repository } from 'typeorm';
 import { ProductsService } from '../products/products.service';
 import { UsersService } from '../users/users.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -21,7 +26,11 @@ export class OrdersService {
     private readonly productsService: ProductsService,
   ) {}
 
-  public async createOrder({ items, userId }: CreateOrderDto): Promise<Order> {
+  public async createOrder({
+    items,
+    userId,
+    discount,
+  }: CreateOrderDto): Promise<Order> {
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
@@ -55,6 +64,7 @@ export class OrdersService {
       items: orderItems,
       status: OrderStatus.PLACED,
       total: total,
+      discount: discount,
     });
 
     return await this.ordersRepository.save(createdOrder);

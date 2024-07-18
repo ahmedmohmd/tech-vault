@@ -1,37 +1,54 @@
 import { Transform } from 'class-transformer';
-import { Category } from 'src/categories/category.entity';
 import { ColumnNumericTransformer } from 'src/common/transfomers/numiric.transformer';
-import { Order } from 'src/orders/order.entity';
-import { Product } from 'src/products/product.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({
-  name: 'order_items',
+  name: 'promo_codes',
 })
-export class OrderItem {
+export class PromoCode {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('int')
-  quantity: number;
+  @Column({
+    unique: true,
+  })
+  code: string;
 
-  @Column()
-  price: number;
+  @Column({
+    default: 0,
+  })
+  discount: number;
   // @Column({
   //   type: 'decimal',
   //   transformer: new ColumnNumericTransformer(),
   // })
   // @Transform(({ value }) => value.toString())
-  // price: number;
+  // discount: number;
+
+  @Column({
+    type: 'timestamp',
+  })
+  expirationDate: Date;
+
+  @Column()
+  usageLimit: number;
+
+  @Column({
+    default: 0,
+  })
+  usageCount: number;
+
+  @Column({
+    default: true,
+  })
+  isActive: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -42,16 +59,4 @@ export class OrderItem {
     type: 'timestamp',
   })
   updatedAt: Date;
-
-  @ManyToOne(() => Product, (product) => product.items, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
-  })
-  product: Product;
-
-  @ManyToOne(() => Order, (order) => order.items, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
-  })
-  order: Order;
 }

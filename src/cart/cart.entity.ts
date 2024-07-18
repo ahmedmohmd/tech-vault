@@ -1,3 +1,5 @@
+import { Transform } from 'class-transformer';
+import { ColumnNumericTransformer } from 'src/common/transfomers/numiric.transformer';
 import {
   Column,
   Entity,
@@ -22,4 +24,15 @@ export class Cart {
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cart, { cascade: true })
   items: CartItem[];
+
+  // @Column({
+  //   type: 'decimal',
+  //   transformer: new ColumnNumericTransformer(),
+  // })
+  // @Transform(({ value }) => value.toString())
+  // discount: number;
+  @Column({
+    default: 0,
+  })
+  discount: number;
 }

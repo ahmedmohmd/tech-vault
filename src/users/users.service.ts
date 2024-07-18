@@ -6,6 +6,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FileUploadService } from '../file-upload/file-upload.service';
+import { GetAllUsersQueryDto } from './dto/get-all-users-query.dto';
+import { ISortAttributes } from './enums/query-params.enum';
+import { IGetUsersQuery } from './types/query-params.type';
 import { UserImage } from './user-image.entity';
 import { User } from './user.entity';
 
@@ -34,27 +37,6 @@ interface IUpdateUser extends Partial<ICreateUser> {
   resetTokenExpirationDate?: Date;
 }
 
-enum ISortAttributes {
-  createdAt = 'createdAt',
-}
-
-enum IFilterAttributes {
-  verified = 'verified',
-}
-
-enum IOrder {
-  ASC = 'asc',
-  DSC = 'desc',
-}
-
-interface IGetUsersQuery {
-  page: number;
-  limit: number;
-  sort: ISortAttributes;
-  filter: IFilterAttributes;
-  order: IOrder;
-}
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -67,21 +49,40 @@ export class UsersService {
     page,
     limit,
     order,
-    filter,
-    sort,
-  }: IGetUsersQuery) {
-    return await this.usersRepository.find({
-      skip: (page - 1) * limit,
-      take: limit,
+    verified: isVerified,
+    sortBy,
+  }: GetAllUsersQueryDto) {
+    const allUsers = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.userImage', 'userImage');
 
-      where: {
-        verified: filter === IFilterAttributes.verified && true,
-      },
+    if (isVerified) {
+      allUsers.where(`user.verified = :verified`, {
+        verified: isVerified === 'true' ? true : false,
+      });
+    }
 
-      order: {
-        createdAt: ISortAttributes.createdAt ? (order ? order : 'desc') : null,
-      },
-    });
+    if (page) {
+      allUsers.skip((+page - 1) * +limit);
+    }
+
+    if (limit) {
+      allUsers.limit(+limit);
+    }
+
+    if (sortBy) {
+      switch (sortBy) {
+        case ISortAttributes.createdAt:
+          allUsers.addOrderBy('user.createdAt', order);
+          break;
+
+        case ISortAttributes.name:
+          allUsers.addOrderBy('user.firstName', order);
+          break;
+      }
+    }
+
+    return allUsers.getMany();
   }
 
   public async getSingleUser(userId: number) {

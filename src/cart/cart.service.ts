@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundError } from 'rxjs';
 import { OrdersService } from 'src/orders/orders.service';
 import { PaymentsService } from 'src/payments/payments.service';
 import { ProductsService } from 'src/products/products.service';
+import { PromoCodesService } from 'src/promo-codes/promocodes.service';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CartItem } from './cart-item.entity';
@@ -22,6 +27,7 @@ export class CartService {
     private readonly productsService: ProductsService,
     private readonly ordersService: OrdersService,
     private readonly paymentsService: PaymentsService,
+    private readonly promoCodesService: PromoCodesService,
   ) {}
 
   public async findOrCreateCart(userId: number) {
@@ -48,6 +54,7 @@ export class CartService {
     const createdCart = this.cartRepository.create({
       user: targetUser,
       items: [],
+      discount: 0,
     });
 
     return await this.cartRepository.save(createdCart);
@@ -133,6 +140,7 @@ export class CartService {
     await this.cartItemsRepository.remove(targetCart.items);
 
     targetCart.items = [];
+    targetCart.discount = 0;
 
     await this.cartRepository.save(targetCart);
   }
@@ -156,9 +164,35 @@ export class CartService {
         productId: item.product.id,
         quantity: item.quantity,
       })),
+      discount: targetCart.discount,
     });
 
     return await this.paymentsService.createPaymentIntent(createdOrder.id);
+  }
+
+  public async applyPromoCode(userId: number, promoCode: string) {
+    const targetCart = await this.findOrCreateCart(userId);
+    if (targetCart.items.length <= 0) {
+      throw new BadRequestException('Cart is Empty.');
+    }
+
+    const targetPromoCode =
+      await this.promoCodesService.findPromoCodeByCode(promoCode);
+
+    const isValidPromoCode =
+      await this.promoCodesService.isValidPromoCode(targetPromoCode);
+
+    if (!isValidPromoCode) {
+      throw new BadRequestException('Promo Code is Invalid.');
+    }
+
+    targetCart.discount += targetPromoCode.discount;
+
+    await this.promoCodesService.updatePromoCode(targetPromoCode.id, {
+      usageCount: targetPromoCode.usageCount + 1,
+    });
+
+    return await this.cartRepository.save(targetCart);
   }
 
   public async isCartExists(userId: number) {

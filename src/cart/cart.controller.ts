@@ -12,6 +12,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/common/decorators/user/user.decorator';
 import { CartService } from './cart.service';
+import { ApplyPromoCodeDto } from './dto/apply-promo-code.dto';
 import { CreateCartItemDto } from './dto/cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
@@ -56,5 +57,10 @@ export class CartController {
   @Post('clear')
   public async clearCart(@User() user) {
     return await this.cartService.clearCart(user?.userId);
+  }
+
+  @Post('apply-promo-code')
+  public async applyPromoCode(@User() user, @Body() body: ApplyPromoCodeDto) {
+    return await this.cartService.applyPromoCode(user?.userId, body.code);
   }
 }

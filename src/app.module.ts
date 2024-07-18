@@ -11,10 +11,10 @@ import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/category.entity';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
-import { FileUploadModule } from './file-upload/file-upload.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { MailModule } from './mail/mail.module';
-import { OrderItemsModule } from './order-items/order-items.module';
+import { Notification } from './notifications/notification.entity';
+import { NotificationsModule } from './notifications/notifications.module';
 import { OrderItem } from './orders/order-item.entity';
 import { Order } from './orders/order.entity';
 import { OrdersModule } from './orders/orders.module';
@@ -22,12 +22,15 @@ import { PaymentsModule } from './payments/payments.module';
 import { ProductImage } from './products/product-image.entity';
 import { Product } from './products/product.entity';
 import { ProductsModule } from './products/products.module';
+import { PromoCode } from './promo-codes/promo-code.entity';
+import { PromoCodesModule } from './promo-codes/promocodes.module';
 import { Review } from './reviews/review.entity';
 import { ReviewsModule } from './reviews/reviews.module';
 import { UserImage } from './users/user-image.entity';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
-import { NotificationsModule } from './notifications/notifications.module';
+import { Wishlist } from './wishlist/wishlist.entity';
+import { WishlistModule } from './wishlist/wishlist.module';
 
 @Module({
   providers: [BcryptService, CloudinaryService],
@@ -57,6 +60,9 @@ import { NotificationsModule } from './notifications/notifications.module';
         Cart,
         CartItem,
         Review,
+        Notification,
+        PromoCode,
+        Wishlist,
       ],
       synchronize: true,
     }),
@@ -69,6 +75,8 @@ import { NotificationsModule } from './notifications/notifications.module';
     InvoicesModule,
     ReviewsModule,
     NotificationsModule,
+    PromoCodesModule,
+    WishlistModule,
   ],
 })
 export class AppModule {}

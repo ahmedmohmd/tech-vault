@@ -1,3 +1,5 @@
+import { Transform } from 'class-transformer';
+import { ColumnNumericTransformer } from 'src/common/transfomers/numiric.transformer';
 import { OrderItem } from 'src/orders/order-item.entity';
 import {
   Column,
@@ -24,8 +26,16 @@ export class Order {
   })
   status: OrderStatus;
 
-  @Column('numeric')
+  @Column({
+    default: 0,
+  })
   total: number;
+  // @Column({
+  //   type: 'decimal',
+  //   transformer: new ColumnNumericTransformer(),
+  // })
+  // @Transform(({ value }) => value.toString())
+  // total: number;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -47,4 +57,9 @@ export class Order {
     cascade: true,
   })
   items: OrderItem[];
+
+  @Column({ default: 0 })
+  discount: number;
+  // @Column({ type: 'decimal', default: 0 })
+  // discount: number;
 }
