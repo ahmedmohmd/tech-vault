@@ -1,7 +1,3 @@
-import { Category } from 'src/categories/category.entity';
-import { OrderItem } from 'src/orders/order-item.entity';
-import { Review } from 'src/reviews/review.entity';
-import { Wishlist } from 'src/wishlist/wishlist.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,6 +7,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Category } from '../categories/category.entity';
+import { OrderItem } from '../orders/order-item.entity';
+import { Review } from '../reviews/review.entity';
+import { Wishlist } from '../wishlist/wishlist.entity';
 import { ProductImage } from './product-image.entity';
 
 @Entity({

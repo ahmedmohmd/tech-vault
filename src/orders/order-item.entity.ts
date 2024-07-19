@@ -1,5 +1,3 @@
-import { Order } from 'src/orders/order.entity';
-import { Product } from 'src/products/product.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Order } from '../orders/order.entity';
+import { Product } from '../products/product.entity';
 
 @Entity({
   name: 'order_items',

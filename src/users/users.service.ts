@@ -85,13 +85,19 @@ export class UsersService {
   }
 
   public async getSingleUser(userId: number) {
-    return await this.usersRepository.findOne({
+    const targetUser = await this.usersRepository.findOne({
       where: {
         id: userId,
       },
 
       relations: ['userImage'],
     });
+
+    if (!targetUser) {
+      throw new NotFoundException('User not Found.');
+    }
+
+    return targetUser;
   }
 
   public async createUser(

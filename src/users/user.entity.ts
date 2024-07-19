@@ -1,8 +1,5 @@
 import * as bcrypt from 'bcrypt';
 
-import { Notification } from 'src/notifications/notification.entity';
-import { Review } from 'src/reviews/review.entity';
-import { Wishlist } from 'src/wishlist/wishlist.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -16,7 +13,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Cart } from '../cart/cart.entity';
+import { Notification } from '../notifications/notification.entity';
 import { Order } from '../orders/order.entity';
+import { Review } from '../reviews/review.entity';
+import { Wishlist } from '../wishlist/wishlist.entity';
 import { Role } from './enums/user-role.enum';
 import { UserImage } from './user-image.entity';
 

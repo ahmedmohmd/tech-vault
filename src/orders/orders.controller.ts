@@ -13,7 +13,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Serialize } from '../common/interceptors/serialize/serialize.decorator';
 import { Roles } from '../users/decorators/roles.decorator';
 import { Role } from '../users/enums/user-role.enum';
-import { RolesGuard } from '../users/guards/roles/roles.guard';
+import { RolesGuard } from '../users/guards/roles.guard';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderDto } from './dto/order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';

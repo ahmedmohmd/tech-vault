@@ -36,3 +36,7 @@ lerna-debug.log*
 
 # Ignore text files
 *.txt
+
+# Ignore Custome Files
+.env
+docker-compose.yaml
