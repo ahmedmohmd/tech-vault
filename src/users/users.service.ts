@@ -2,14 +2,16 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FileUploadService } from '../file-upload/file-upload.service';
-import { GetAllUsersQueryDto } from './dto/get-all-users-query.dto';
-import { ISortAttributes } from './enums/query-params.enum';
-import { UserImage } from './user-image.entity';
-import { User } from './user.entity';
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { InjectRepository } from "@nestjs/typeorm";
+import { MailService } from "src/mail/mail.service";
+import { Repository } from "typeorm";
+import { FileUploadService } from "../file-upload/file-upload.service";
+import { GetAllUsersQueryDto } from "./dto/get-all-users-query.dto";
+import { ISortAttributes } from "./enums/query-params.enum";
+import { UserImage } from "./user-image.entity";
+import { User } from "./user.entity";
 
 interface ICreateUserImage {
   url: string;
@@ -43,6 +45,8 @@ export class UsersService {
     @InjectRepository(UserImage)
     private readonly userImageRepository: Repository<UserImage>,
     private readonly fileUploadService: FileUploadService,
+    private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
   public async getAllUsers({
     page,
@@ -52,12 +56,12 @@ export class UsersService {
     sortBy,
   }: GetAllUsersQueryDto) {
     const allUsers = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.userImage', 'userImage');
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.userImage", "userImage");
 
     if (isVerified) {
       allUsers.where(`user.verified = :verified`, {
-        verified: isVerified === 'true' ? true : false,
+        verified: isVerified === "true" ? true : false,
       });
     }
 
@@ -72,11 +76,11 @@ export class UsersService {
     if (sortBy) {
       switch (sortBy) {
         case ISortAttributes.createdAt:
-          allUsers.addOrderBy('user.createdAt', order);
+          allUsers.addOrderBy("user.createdAt", order);
           break;
 
         case ISortAttributes.name:
-          allUsers.addOrderBy('user.firstName', order);
+          allUsers.addOrderBy("user.firstName", order);
           break;
       }
     }
@@ -90,11 +94,11 @@ export class UsersService {
         id: userId,
       },
 
-      relations: ['userImage'],
+      relations: ["userImage"],
     });
 
     if (!targetUser) {
-      throw new NotFoundException('User not Found.');
+      throw new NotFoundException("User not Found.");
     }
 
     return targetUser;
@@ -113,7 +117,7 @@ export class UsersService {
       return await this.usersRepository.save(createdUser);
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 
@@ -126,7 +130,7 @@ export class UsersService {
       });
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 
@@ -139,11 +143,11 @@ export class UsersService {
       where: {
         id: userId,
       },
-      relations: ['userImage'],
+      relations: ["userImage"],
     });
 
     if (!targetUser) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException("User not found.");
     }
 
     const targetImage = await this.userImageRepository.findOne({
@@ -160,7 +164,7 @@ export class UsersService {
 
     const uploadedImage = await this.fileUploadService.uploadImage({
       file: userImage,
-      path: 'e-commerce/users-images',
+      path: "e-commerce/users-images",
     });
 
     if (uploadedImage) {
@@ -175,11 +179,25 @@ export class UsersService {
       userImage: targetImage,
     });
 
-    await this.usersRepository.save(updatedUser);
+    if (userData.email) {
+      updatedUser.verified = false;
 
-    return {
-      message: 'User updated successfully.',
-    };
+      const mailOptions = {
+        from: this.configService.get<string>("MAIL_USERNAME"),
+        to: updatedUser.email,
+        subject: "Verify Email",
+        template: "./email-verification",
+        context: {
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          verificationToken: updatedUser.verificationToken,
+        },
+      };
+
+      await this.mailService.sendMail(mailOptions);
+    }
+
+    return await this.usersRepository.save(updatedUser);
   }
 
   public async findUserByVerificationToken(token: string) {
@@ -191,7 +209,7 @@ export class UsersService {
       });
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 
@@ -204,7 +222,7 @@ export class UsersService {
       });
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 
@@ -217,7 +235,7 @@ export class UsersService {
       });
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 
@@ -230,7 +248,7 @@ export class UsersService {
       });
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 
@@ -239,17 +257,24 @@ export class UsersService {
       where: {
         id: userId,
       },
-      relations: ['userImage'],
+      relations: ["userImage"],
     });
 
     if (!targetUser) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException("User not found.");
     }
 
-    await this.fileUploadService.removeImage(
-      targetUser.userImage.imagePublicId,
-    );
+    try {
+      await this.fileUploadService.removeImage(
+        targetUser.userImage.imagePublicId,
+      );
 
-    return await this.usersRepository.remove(targetUser);
+      await this.usersRepository.remove(targetUser);
+    } catch (error) {
+      console.error(`Error: ${error}`);
+      throw new InternalServerErrorException("Internal Server Error");
+    }
+
+    return;
   }
 }

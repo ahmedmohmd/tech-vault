@@ -5,11 +5,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { User } from '../users/user.entity';
+} from "typeorm";
+import { User } from "../users/user.entity";
 
 @Entity({
-  name: 'notifications',
+  name: "notifications",
 })
 export class Notification {
   @PrimaryGeneratedColumn()
@@ -19,8 +19,8 @@ export class Notification {
   message: string;
 
   @ManyToOne(() => User, (user) => user.notifications, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
   })
   user: User;
 
@@ -28,12 +28,12 @@ export class Notification {
   read: boolean;
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   updatedAt: Date;
 }

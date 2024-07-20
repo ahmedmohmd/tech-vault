@@ -4,10 +4,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity({
-  name: 'users_images',
+  name: "users_images",
 })
 export class UserImage {
   @PrimaryGeneratedColumn()
@@ -23,12 +23,12 @@ export class UserImage {
   imagePublicId: string;
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   updatedAt: Date;
 }

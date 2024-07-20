@@ -4,10 +4,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity({
-  name: 'promo_codes',
+  name: "promo_codes",
 })
 export class PromoCode {
   @PrimaryGeneratedColumn()
@@ -30,7 +30,7 @@ export class PromoCode {
   // discount: number;
 
   @Column({
-    type: 'timestamp',
+    type: "timestamp",
   })
   expirationDate: Date;
 
@@ -48,12 +48,12 @@ export class PromoCode {
   isActive: boolean;
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   updatedAt: Date;
 }

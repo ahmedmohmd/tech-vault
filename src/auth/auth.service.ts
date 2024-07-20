@@ -3,18 +3,18 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
-import { BcryptService } from '../bcrypt/bcrypt.service';
-import { FileUploadService } from '../file-upload/file-upload.service';
-import { MailService } from '../mail/mail.service';
-import { UsersService } from '../users/users.service';
-import { SignInDto } from './dto/sign-in.dto';
-import { SignUpDto } from './dto/sign-up.dto';
-import { RandomTokenService } from './random-token.service';
-import { IGoogleUser } from './types/google-user';
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { Response } from "express";
+import { BcryptService } from "../bcrypt/bcrypt.service";
+import { FileUploadService } from "../file-upload/file-upload.service";
+import { MailService } from "../mail/mail.service";
+import { UsersService } from "../users/users.service";
+import { SignInDto } from "./dto/sign-in.dto";
+import { SignUpDto } from "./dto/sign-up.dto";
+import { RandomTokenService } from "./random-token.service";
+import { IGoogleUser } from "./types/google-user";
 
 @Injectable()
 export class AuthService {
@@ -35,19 +35,19 @@ export class AuthService {
     const customUserData = Object.assign(userData, {
       password: await this.bcryptService.hashPassword(userData.password),
       verificationToken: this.randomTokenService.generateRandomToken(
-        this.configService.get<number>('VERIFICATION_TOKEN_LENGTH'),
+        this.configService.get<number>("VERIFICATION_TOKEN_LENGTH"),
       ),
     });
 
     const isUserExists = await this.usersService.isUserExists(userData.email);
 
     if (isUserExists) {
-      throw new BadRequestException('User already Exists.');
+      throw new BadRequestException("User already Exists.");
     }
 
     const { public_id, secure_url } = await this.fileUploadService.uploadImage({
       file: userImage,
-      path: 'e-commerce/images/users-images',
+      path: "e-commerce/images/users-images",
     });
 
     const createdUser = await this.usersService.createUser(customUserData, {
@@ -57,10 +57,10 @@ export class AuthService {
 
     if (createdUser) {
       const mailOptions = {
-        from: this.configService.get<string>('MAIL_USERNAME'),
+        from: this.configService.get<string>("MAIL_USERNAME"),
         to: createdUser.email,
-        subject: 'Verify Email',
-        template: './email-verification',
+        subject: "Verify Email",
+        template: "./email-verification",
         context: {
           firstName: createdUser.firstName,
           lastName: createdUser.lastName,
@@ -77,7 +77,7 @@ export class AuthService {
 
     const jwtToken = await this.jwtService.sign(payload);
     const refreshToken = await this.jwtService.sign(payload, {
-      expiresIn: '7d',
+      expiresIn: "7d",
     });
 
     return {
@@ -97,7 +97,7 @@ export class AuthService {
     );
 
     if (!isCorrectPassword)
-      throw new BadRequestException('Password is incorrect.');
+      throw new BadRequestException("Password is incorrect.");
 
     const payload = {
       userId: targetUser.id,
@@ -105,7 +105,7 @@ export class AuthService {
 
     const jwtToken = await this.jwtService.sign(payload);
     const refreshToken = await this.jwtService.sign(payload, {
-      expiresIn: '7d',
+      expiresIn: "7d",
     });
 
     return {
@@ -118,20 +118,16 @@ export class AuthService {
     const targetUser =
       await this.usersService.findUserByVerificationToken(verificationToken);
 
-    if (targetUser) {
-      await this.usersService.updateUser(targetUser.id, {
-        verificationToken: null,
-        verified: true,
-      });
-
-      return {
-        message: 'Your are Verified Successfully.',
-      };
+    if (!targetUser) {
+      throw new NotFoundException("User not Found.");
     }
 
-    return {
-      message: 'Sorry, Your Email is not Verified .',
-    };
+    await this.usersService.updateUser(targetUser.id, {
+      verificationToken: null,
+      verified: true,
+    });
+
+    return;
   }
 
   public async authWithGoogle(
@@ -172,11 +168,11 @@ export class AuthService {
 
     const jwtToken = await this.jwtService.sign(payload);
     const refreshToken = await this.jwtService.sign(payload, {
-      expiresIn: '7d',
+      expiresIn: "7d",
     });
 
     return res.redirect(
-      `${this.configService.get<string>('FRONT_END_ENDPOINT')}/google/redirect/?jwtToken=${jwtToken}&jwtRefreshToken=${refreshToken}`,
+      `${this.configService.get<string>("FRONT_END_ENDPOINT")}/google/redirect/?jwtToken=${jwtToken}&jwtRefreshToken=${refreshToken}`,
     );
   }
 
@@ -184,7 +180,7 @@ export class AuthService {
     const isUserExists = await this.usersService.isUserExists(email);
 
     if (!isUserExists) {
-      throw new BadRequestException('User does not exists.');
+      throw new NotFoundException("User does not exists.");
     }
 
     const targetUser = await this.usersService.findUserByEmail(email);
@@ -194,7 +190,7 @@ export class AuthService {
     };
 
     const resetToken = await this.jwtService.sign(payload, {
-      expiresIn: '1h',
+      expiresIn: "1h",
     });
 
     await this.usersService.updateUser(targetUser.id, {
@@ -202,14 +198,14 @@ export class AuthService {
     });
 
     const mailOptions = {
-      from: this.configService.get<string>('MAIL_USERNAME'),
+      from: this.configService.get<string>("MAIL_USERNAME"),
       to: targetUser.email,
-      subject: 'Reset Password',
-      template: './reset-password',
+      subject: "Reset Password",
+      template: "./reset-password",
       context: {
         firstName: targetUser.firstName,
         lastName: targetUser.lastName,
-        resetLink: `${this.configService.get<string>('FRONT_END')}/reset-password/${resetToken}`,
+        resetLink: `${this.configService.get<string>("FRONT_END")}/reset-password/${resetToken}`,
         email: targetUser.email,
       },
     };
@@ -217,7 +213,7 @@ export class AuthService {
     await this.mailService.sendMail(mailOptions);
 
     return {
-      message: 'Please check your Email.',
+      message: "Please check your Email.",
     };
   }
 
@@ -226,16 +222,16 @@ export class AuthService {
     const targetUser = await this.usersService.findUserByResetToken(resetToken);
 
     if (!targetUser) {
-      throw new BadRequestException('Token is Invalid.');
+      throw new BadRequestException("Token is Invalid.");
     }
 
     try {
       payload = await this.jwtService.verify(targetUser.resetToken);
     } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        throw new BadRequestException('Token has expired.');
+      if (error.name === "TokenExpiredError") {
+        throw new BadRequestException("Token has expired.");
       } else {
-        throw new BadRequestException('Token is invalid.');
+        throw new BadRequestException("Token is invalid.");
       }
     }
 
@@ -262,7 +258,7 @@ export class AuthService {
       };
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 }

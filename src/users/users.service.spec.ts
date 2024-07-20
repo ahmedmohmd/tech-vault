@@ -1,11 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { Repository } from 'typeorm';
-import { FileUploadService } from '../file-upload/file-upload.service';
-import { UserImage } from './user-image.entity';
-import { User } from './user.entity';
-import { UsersService } from './users.service';
+import { ConfigService } from "@nestjs/config";
+import { Test, TestingModule } from "@nestjs/testing";
+import { MailService } from "src/mail/mail.service";
+import { Repository } from "typeorm";
+import { FileUploadService } from "../file-upload/file-upload.service";
+import { UserImage } from "./user-image.entity";
+import { User } from "./user.entity";
+import { UsersService } from "./users.service";
 
-describe('UsersService', () => {
+describe("UsersService", () => {
   let service: UsersService;
 
   beforeEach(async () => {
@@ -17,6 +19,14 @@ describe('UsersService', () => {
         },
         {
           provide: FileUploadService,
+          useValue: {},
+        },
+        {
+          provide: ConfigService,
+          useValue: {},
+        },
+        {
+          provide: MailService,
           useValue: {},
         },
         {
@@ -33,7 +43,7 @@ describe('UsersService', () => {
     service = module.get<UsersService>(UsersService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

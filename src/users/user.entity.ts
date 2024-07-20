@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 
 import {
   BeforeInsert,
@@ -11,17 +11,17 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Cart } from '../cart/cart.entity';
-import { Notification } from '../notifications/notification.entity';
-import { Order } from '../orders/order.entity';
-import { Review } from '../reviews/review.entity';
-import { Wishlist } from '../wishlist/wishlist.entity';
-import { Role } from './enums/user-role.enum';
-import { UserImage } from './user-image.entity';
+} from "typeorm";
+import { Cart } from "../cart/cart.entity";
+import { Notification } from "../notifications/notification.entity";
+import { Order } from "../orders/order.entity";
+import { Review } from "../reviews/review.entity";
+import { Wishlist } from "../wishlist/wishlist.entity";
+import { Role } from "./enums/user-role.enum";
+import { UserImage } from "./user-image.entity";
 
 @Entity({
-  name: 'users',
+  name: "users",
 })
 export class User {
   @PrimaryGeneratedColumn()
@@ -30,9 +30,7 @@ export class User {
   @Column()
   firstName: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   lastName: string;
 
   @Column({
@@ -42,6 +40,16 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({
+    nullable: true,
+  })
+  phoneNumber: string;
+
+  @Column({
+    nullable: true,
+  })
+  address: string;
 
   @Column({
     default: false,
@@ -67,8 +75,8 @@ export class User {
   resetTokenExpirationDate: Date;
 
   @OneToOne(() => UserImage, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
     cascade: true,
   })
   @JoinColumn()
@@ -98,12 +106,12 @@ export class User {
   carts: Cart[];
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   updatedAt: Date;
 

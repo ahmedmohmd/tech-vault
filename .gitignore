@@ -36,6 +36,7 @@ lerna-debug.log*
 
 # Ignore text files
 *.txt
+database-design.dbml
 
 # Ignore Custome Files
 .env

@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Product } from '../products/product.entity';
-import { User } from '../users/user.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from "../products/product.entity";
+import { User } from "../users/user.entity";
 
 @Entity({
-  name: 'reviews',
+  name: "reviews",
 })
 export class Review {
   @PrimaryGeneratedColumn()
@@ -15,14 +15,14 @@ export class Review {
   @Column()
   comment: string;
   @ManyToOne(() => User, (user) => user.reviews, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
   })
   user: User;
 
   @ManyToOne(() => Product, (product) => product.reviews, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
   })
   product: Product;
 }

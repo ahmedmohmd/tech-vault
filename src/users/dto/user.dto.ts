@@ -1,4 +1,4 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform } from "class-transformer";
 
 export class UserDto {
   @Expose()
@@ -12,6 +12,12 @@ export class UserDto {
 
   @Expose()
   email: string;
+
+  @Expose()
+  phoneNumber: string;
+
+  @Expose()
+  address: string;
 
   @Transform(({ obj }) => obj.userImage?.url)
   @Expose()

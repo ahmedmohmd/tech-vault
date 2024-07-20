@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import {
   IsBooleanString,
   IsEnum,
@@ -6,16 +6,17 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
-} from 'class-validator';
-import { IOrder, ISortAttributes } from '../enums/query-params.enum';
+} from "class-validator";
+import { IOrder, ISortAttributes } from "../enums/query-params.enum";
 
 export class GetAllUsersQueryDto {
   @ApiProperty({
     required: false,
-    description: 'Return Page.',
+    description: "Return Page.",
     minimum: 1,
     default: 1,
     type: Number,
+    example: 3,
   })
   @IsOptional()
   @IsNumberString()
@@ -24,10 +25,11 @@ export class GetAllUsersQueryDto {
 
   @ApiProperty({
     required: false,
-    description: 'How much user You Need?',
+    description: "How much user You Need?",
     minimum: 1,
     default: 12,
     type: Number,
+    example: 12,
   })
   @IsOptional()
   @IsNotEmpty()
@@ -36,10 +38,11 @@ export class GetAllUsersQueryDto {
 
   @ApiProperty({
     required: false,
-    description: 'Sorting Options.',
+    description: "Sorting Options.",
     default: ISortAttributes.createdAt,
     type: ISortAttributes,
     enum: ISortAttributes,
+    example: ISortAttributes.name,
   })
   @IsOptional()
   @IsNotEmpty()
@@ -49,10 +52,11 @@ export class GetAllUsersQueryDto {
 
   @ApiProperty({
     required: false,
-    description: 'Ordering',
+    description: "Ordering",
     default: IOrder.ASC,
     type: IOrder,
     enum: IOrder,
+    example: IOrder.DSC,
   })
   @IsOptional()
   @IsNotEmpty()
@@ -62,8 +66,9 @@ export class GetAllUsersQueryDto {
 
   @ApiProperty({
     required: false,
-    description: 'Filter Users by Verified Field.',
+    description: "Filter Users by Verified Field.",
     type: Boolean,
+    example: true,
   })
   @IsNotEmpty()
   @IsOptional()
