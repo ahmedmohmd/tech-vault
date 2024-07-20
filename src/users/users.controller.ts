@@ -36,7 +36,7 @@ import { UsersService } from "./users.service";
 @ApiBearerAuth()
 @ApiTags("Users")
 @Controller("users")
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
