@@ -37,13 +37,9 @@
 - **Linting**: [ESLint](https://eslint.org/) - The pluggable linting utility for JavaScript and JSX.
 - **Formatting**: [Prettier](https://prettier.io/) - An opinionated code formatter.
 
-## Key Features
+## App Key Features
 
-Sure! Here is an updated list of features with appropriate icons:
-
-# App Features
-
-## 🧑‍💻 Authentication & Security
+### 🧑‍💻 Authentication & Security
 
 - User credential authentication
 - Google authentication with JWT and Google OAuth for enhanced security
@@ -51,46 +47,46 @@ Sure! Here is an updated list of features with appropriate icons:
 - Email verification process upon registration
 - Support for multiple user emails with primary and secondary designations
 
-## User Profile & Media 👤
+### User Profile & Media 👤
 
 - Users can add/remove phone numbers and set a primary number
 - Profile photo upload during registration and the ability to change it at any time, powered by Cloudinary and Multer
 
-## 🔔 Notifications
+### 🔔 Notifications
 
 - Email notifications using Nodemailer and Gmail
 - In-app notifications for an improved user experience
 - Redis-based caching layer for enhanced app performance
 
-## 💰 💳 Payments & Invoices
+### 💰 💳 Payments & Invoices
 
 - Integration with Stripe and PayPal for payment processing
 - Promo codes with customizable usage limits and activation controls
 - Invoicing for completed orders
 
-## 🔍 Product Search & Discovery
+### 🔍 Product Search & Discovery
 
 - Categorized product listings for efficient browsing
 - Advanced filtering and sorting options
 - Product reviews to aid user decision-making
 - Wishlist feature for users to save products for future reference
 
-## 🛒 Cart & Checkout
+### 🛒 Cart & Checkout
 
 - Persistent user cart for seamless shopping
 - Order confirmation and payment processing
 
-## Performance Optimization 📈
+### Performance Optimization 📈
 
 - Redis caching layer for improved app speed
 
-## CI/CD & Deployment 🚀
+### CI/CD & Deployment 🚀
 
 - Automated CI/CD pipeline using GitHub Actions for dependency installation, linting, testing, and deployment
 - Docker containerization with Docker Compose for the main app, PostgreSQL, Redis, and Nginx
 - Nginx as a web server and reverse proxy
 
-## Additional Features 🌟
+### Additional Features 🌟
 
 - Well-designed database schema
 - Email notifications for user registration
