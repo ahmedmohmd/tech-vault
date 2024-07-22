@@ -10,6 +10,7 @@ import { SignUpDto } from "src/auth/dto/sign-up.dto";
 import { MailService } from "src/mail/mail.service";
 import { Repository } from "typeorm";
 import { FileUploadService } from "../file-upload/file-upload.service";
+import { Address } from "./address.entity";
 import { GetAllUsersQueryDto } from "./dto/get-all-users-query.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Email } from "./email.entity";
@@ -33,6 +34,8 @@ export class UsersService {
     private readonly emailRepository: Repository<Email>,
     @InjectRepository(Phone)
     private readonly phoneRepository: Repository<Phone>,
+    @InjectRepository(Address)
+    private readonly addressRepository: Repository<Address>,
     private readonly fileUploadService: FileUploadService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
@@ -104,9 +107,9 @@ export class UsersService {
         firstName: userData.firstName,
         lastName: userData.lastName,
         password: userData.password,
-        address: userData.address,
         emails: [],
         phoneNumbers: [],
+        addresses: [],
       });
       let createdImage;
       if (imageDate.imagePublicId) {
@@ -123,9 +126,17 @@ export class UsersService {
       });
       createdPhoneNumber.isPrimary = true;
 
+      const createdAddress = this.addressRepository.create({
+        city: userData.city,
+        country: userData.country,
+        postCode: userData.postCode,
+      });
+      createdAddress.isPrimary = true;
+
       createdUser.userImage = createdImage;
       createdUser.emails.push(createdEmail);
       createdUser.phoneNumbers.push(createdPhoneNumber);
+      createdUser.addresses.push(createdAddress);
 
       return await this.usersRepository.save(createdUser);
     } catch (error) {

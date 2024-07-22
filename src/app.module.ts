@@ -28,6 +28,7 @@ import { PromoCode } from "./promo-codes/promo-code.entity";
 import { PromoCodesModule } from "./promo-codes/promocodes.module";
 import { Review } from "./reviews/review.entity";
 import { ReviewsModule } from "./reviews/reviews.module";
+import { Address } from "./users/address.entity";
 import { Email } from "./users/email.entity";
 import { Phone } from "./users/phone.entity";
 import { UserImage } from "./users/user-image.entity";
@@ -96,6 +97,7 @@ import { WishlistModule } from "./wishlist/wishlist.module";
           Wishlist,
           Email,
           Phone,
+          Address,
         ],
         synchronize: true,
       }),

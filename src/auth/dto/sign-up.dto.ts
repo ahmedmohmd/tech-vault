@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsNumberString,
   IsOptional,
+  IsPostalCode,
   IsString,
   IsStrongPassword,
 } from "class-validator";
@@ -60,13 +61,38 @@ export class SignUpDto {
   @IsString()
   phoneNumber: string;
 
+  // Address Props
   @ApiProperty({
-    description: "The address for the user. Must be a valid address.",
-    example: "Egypt, Cairo",
+    description: "City of the User.",
+    example: "Cairo",
     type: String,
-    title: "Address",
+    title: "City",
   })
+  @IsNotEmpty()
   @IsOptional()
   @IsString()
-  address: string;
+  city: string;
+
+  @ApiProperty({
+    description: "Post Code of the User's Location.",
+    example: "654781",
+    type: String,
+    title: "Post Code",
+  })
+  @IsNotEmpty()
+  @IsPostalCode()
+  @IsOptional()
+  @IsString()
+  postCode: string;
+
+  @ApiProperty({
+    description: "User's Country.",
+    example: "Egypt",
+    type: String,
+    title: "Country",
+  })
+  @IsNotEmpty()
+  @IsOptional()
+  @IsString()
+  country: string;
 }

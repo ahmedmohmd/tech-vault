@@ -152,8 +152,15 @@ export class AuthService {
       {
         firstName: firstName,
         lastName: lastName,
+
+        // Email
         email: email,
-        address: "Qina",
+
+        // Address
+        city: null,
+        country: null,
+        postCode: null,
+
         password: this.randomTokenService.generateRandomToken(8),
         phoneNumber: "01224078792",
         verified: true,

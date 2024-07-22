@@ -17,6 +17,7 @@ import { Notification } from "../notifications/notification.entity";
 import { Order } from "../orders/order.entity";
 import { Review } from "../reviews/review.entity";
 import { Wishlist } from "../wishlist/wishlist.entity";
+import { Address } from "./address.entity";
 import { Email } from "./email.entity";
 import { Role } from "./enums/user-role.enum";
 import { Phone } from "./phone.entity";
@@ -47,11 +48,6 @@ export class User {
     cascade: true,
   })
   phoneNumbers: Phone[];
-
-  @Column({
-    nullable: true,
-  })
-  address: string;
 
   @Column({
     default: false,
@@ -88,6 +84,11 @@ export class User {
     cascade: true,
   })
   orders: Order[];
+
+  @OneToMany(() => Address, (address) => address.user, {
+    cascade: true,
+  })
+  addresses: Address[];
 
   @OneToMany(() => Review, (review) => review.user, {
     cascade: true,

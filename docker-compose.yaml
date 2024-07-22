@@ -1,0 +1,59 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "95123574"
+      POSTGRES_DB: "e-commerce"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  nestjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nestjs
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      BASE_URL: ${{ secrets.BASE_URL }}
+      FRONT_END_ENDPOINT: ${{secrets.FRONT_END_ENDPOINT}}
+      MAIL_USERNAME: ${{secrets.MAIL_USERNAME}}
+      MAIL_PASSWORD: ${{secrets.MAIL_PASSWORD}}
+      MAIL_PORT: ${{secrets.MAIL_PORT}}
+      MAIL_HOST: ${{secrets.MAIL_HOST}}
+      SENDER_EMAIL: ${{secrets.SENDER_EMAIL}}
+      JWT_SECRET: ${{secrets.JWT_SECRET}}
+      VERIFICATION_TOKEN_LENGTH: ${{secrets.VERIFICATION_TOKEN_LENGTH}}
+      GOOGLE_AUTH_CLIENT_ID: ${{secrets.GOOGLE_AUTH_CLIENT_ID}}
+      GOOGLE_AUTH_CLIENT_SECRET: ${{secrets.GOOGLE_AUTH_CLIENT_SECRET}}
+      GOOGLE_AUTH_CALLBACK_URL: ${{secrets.GOOGLE_AUTH_CALLBACK_URL}}
+      RESET_TOKEN_EXPIRATION_TIME: ${{secrets.RESET_TOKEN_EXPIRATION_TIME}}
+      CLOUDINARY_CLOUD_NAME: ${{secrets.CLOUDINARY_CLOUD_NAME}}
+      CLOUDINARY_API_KEY: ${{secrets.CLOUDINARY_API_KEY}}
+      CLOUDINARY_API_SECRET: ${{secrets.CLOUDINARY_API_SECRET}}
+      STRIPE_SECRET_KEY: ${{secrets.STRIPE_SECRET_KEY}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      DATABASE_USER: ${{secrets.DATABASE_USER}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      DATABASE_HOST: ${{secrets.DATABASE_HOST}}
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - nestjs
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+volumes:
+  postgres_data:

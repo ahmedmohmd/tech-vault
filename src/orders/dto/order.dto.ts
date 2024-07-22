@@ -1,6 +1,8 @@
-import { Expose, Transform } from 'class-transformer';
-import { OrderStatus } from '../enums/order-status.enum';
-import { OrderItem } from '../order-item.entity';
+import { Expose, Transform } from "class-transformer";
+import { Address } from "src/users/address.entity";
+import { JoinColumn, OneToOne } from "typeorm";
+import { OrderStatus } from "../enums/order-status.enum";
+import { OrderItem } from "../order-item.entity";
 
 export class OrderDto {
   @Expose()
@@ -11,6 +13,10 @@ export class OrderDto {
 
   @Expose()
   total: number;
+
+  @OneToOne(() => Address)
+  @JoinColumn()
+  address: Address;
 
   @Expose()
   createdAt: Date;
