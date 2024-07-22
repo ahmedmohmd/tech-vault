@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="./public//logo.svg" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <a href="https://github.com/ahmedmohmd/tech-vault" target="blank"><img src="./public//logo.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
   <p align="center">Your Gateway to Ultimate Performance</p>
