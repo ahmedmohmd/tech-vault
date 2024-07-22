@@ -1,12 +1,7 @@
 <p align="center">
   <a href="https://github.com/ahmedmohmd/tech-vault" target="blank"><img src="./public//logo.svg" width="200" alt="Nest Logo" /></a>
 </p>
-
   <p align="center">Your Gateway to Ultimate Performance</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-</p>
 
 ## Description
 
