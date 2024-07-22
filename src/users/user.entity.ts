@@ -17,7 +17,9 @@ import { Notification } from "../notifications/notification.entity";
 import { Order } from "../orders/order.entity";
 import { Review } from "../reviews/review.entity";
 import { Wishlist } from "../wishlist/wishlist.entity";
+import { Email } from "./email.entity";
 import { Role } from "./enums/user-role.enum";
+import { Phone } from "./phone.entity";
 import { UserImage } from "./user-image.entity";
 
 @Entity({
@@ -33,18 +35,18 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column({
-    unique: true,
+  @OneToMany(() => Email, (email) => email.user, {
+    cascade: true,
   })
-  email: string;
+  emails: Email[];
 
   @Column()
   password: string;
 
-  @Column({
-    nullable: true,
+  @OneToMany(() => Phone, (phone) => phone.user, {
+    cascade: true,
   })
-  phoneNumber: string;
+  phoneNumbers: Phone[];
 
   @Column({
     nullable: true,

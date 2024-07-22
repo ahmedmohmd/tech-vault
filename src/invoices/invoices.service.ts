@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { OrdersService } from 'src/orders/orders.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import * as fs from "fs/promises";
+import * as path from "path";
+import { OrdersService } from "src/orders/orders.service";
 
 @Injectable()
 export class InvoicesService {
@@ -11,7 +11,7 @@ export class InvoicesService {
     const isOrderExists = await this.ordersService.isOrderExists(orderId);
 
     if (!isOrderExists) {
-      throw new NotFoundException('Order not Found.');
+      throw new NotFoundException("Order not Found.");
     }
 
     const targetOrder = await this.ordersService.findOrderById(orderId);
@@ -20,7 +20,9 @@ export class InvoicesService {
       orderId: targetOrder.id,
       customer: {
         name: `${targetOrder.user.firstName} $`,
-        email: targetOrder.user.email,
+        email: targetOrder.user.emails.find(
+          (email) => email.isPrimary === true,
+        ),
       },
       items: targetOrder.items.map((item) => ({
         name: item.product.name,
@@ -32,13 +34,13 @@ export class InvoicesService {
     };
 
     await fs.writeFile(
-      path.join(__dirname, '..', '..', 'invoices', `${Math.random()}.json`),
+      path.join(__dirname, "..", "..", "invoices", `${Math.random()}.json`),
       JSON.stringify(invoiceData),
-      'utf-8',
+      "utf-8",
     );
 
     return {
-      message: 'Invoice Created Successfully.',
+      message: "Invoice Created Successfully.",
     };
   }
 }

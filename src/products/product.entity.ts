@@ -6,15 +6,15 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Category } from '../categories/category.entity';
-import { OrderItem } from '../orders/order-item.entity';
-import { Review } from '../reviews/review.entity';
-import { Wishlist } from '../wishlist/wishlist.entity';
-import { ProductImage } from './product-image.entity';
+} from "typeorm";
+import { Category } from "../categories/category.entity";
+import { OrderItem } from "../orders/order-item.entity";
+import { Review } from "../reviews/review.entity";
+import { Wishlist } from "../wishlist/wishlist.entity";
+import { ProductImage } from "./product-image.entity";
 
 @Entity({
-  name: 'products',
+  name: "products",
 })
 export class Product {
   @PrimaryGeneratedColumn()
@@ -41,8 +41,8 @@ export class Product {
   reviews: Review[];
 
   @ManyToOne(() => Category, (category) => category.products, {
-    onDelete: 'SET NULL',
-    onUpdate: 'NO ACTION',
+    onDelete: "SET NULL",
+    onUpdate: "NO ACTION",
   })
   category: Category;
 
@@ -52,12 +52,12 @@ export class Product {
   items: OrderItem[];
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   updatedAt: Date;
 }

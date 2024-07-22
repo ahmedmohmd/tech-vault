@@ -45,20 +45,20 @@ export class AuthService {
       throw new BadRequestException("User already Exists.");
     }
 
-    const { public_id, secure_url } = await this.fileUploadService.uploadImage({
+    const uploadedImage = await this.fileUploadService.uploadImage({
       file: userImage,
       path: "e-commerce/images/users-images",
     });
 
     const createdUser = await this.usersService.createUser(customUserData, {
-      url: secure_url,
-      imagePublicId: public_id,
+      url: uploadedImage?.secure_url,
+      imagePublicId: uploadedImage?.public_id,
     });
 
     if (createdUser) {
       const mailOptions = {
         from: this.configService.get<string>("MAIL_USERNAME"),
-        to: createdUser.email,
+        to: userData.email,
         subject: "Verify Email",
         template: "./email-verification",
         context: {
@@ -153,8 +153,9 @@ export class AuthService {
         firstName: firstName,
         lastName: lastName,
         email: email,
+        address: "Qina",
         password: this.randomTokenService.generateRandomToken(8),
-        verificationToken: null,
+        phoneNumber: "01224078792",
         verified: true,
       },
       {
@@ -199,14 +200,14 @@ export class AuthService {
 
     const mailOptions = {
       from: this.configService.get<string>("MAIL_USERNAME"),
-      to: targetUser.email,
+      to: email,
       subject: "Reset Password",
       template: "./reset-password",
       context: {
         firstName: targetUser.firstName,
         lastName: targetUser.lastName,
         resetLink: `${this.configService.get<string>("FRONT_END")}/reset-password/${resetToken}`,
-        email: targetUser.email,
+        email: email,
       },
     };
 
@@ -260,5 +261,36 @@ export class AuthService {
       console.error(`Internal Server Error: ${error}`);
       throw new InternalServerErrorException("Internal server error.");
     }
+  }
+
+  public async addEmailToUser(userId: number, email: string) {
+    const targetUser = await this.usersService.findUser(userId);
+
+    if (!targetUser) {
+      throw new NotFoundException("User not Found.");
+    }
+
+    const targetEmail = await this.usersService.findEmail(email);
+
+    if (targetEmail) {
+      throw new BadRequestException("Email is already Exists.");
+    }
+
+    return await this.usersService.addEmail(userId, email);
+  }
+
+  public async deleteEmail(userId: number, email: string) {
+    const targetUser = await this.usersService.findUser(userId);
+
+    if (!targetUser) {
+      throw new NotFoundException("User not Found.");
+    }
+    const targetEmail = await this.usersService.findEmail(email);
+
+    if (!targetEmail) {
+      throw new NotFoundException("Email is not Exists.");
+    }
+
+    return await this.usersService.deleteEmail(userId, email);
   }
 }

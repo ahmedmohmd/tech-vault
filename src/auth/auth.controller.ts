@@ -22,6 +22,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { Throttle } from "@nestjs/throttler";
 import { UploadImage } from "../common/decorators/upload-image/upload-image.decorator";
 import { User } from "../common/decorators/user/user.decorator";
 import { AuthService } from "./auth.service";
@@ -141,6 +142,12 @@ export class AuthController {
       },
     },
   })
+  @Throttle({
+    default: {
+      limit: 3,
+      ttl: 3600000,
+    },
+  })
   @Post("sign-in")
   public async SignIn(@Body() body: SignInDto) {
     return await this.authService.signIn(body);
@@ -252,4 +259,10 @@ export class AuthController {
       throw new InternalServerErrorException("Internal server error.");
     }
   }
+
+  // @Post("/add_email")
+  // public async addEmailToUser(@User()) {}
+
+  // @Delete("/delete_email")
+  // public async deleteEmailFromUser() {}
 }

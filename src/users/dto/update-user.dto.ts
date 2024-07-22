@@ -1,6 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
+  IsBoolean,
+  IsDateString,
   IsEmail,
+  IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
@@ -28,16 +31,17 @@ export class UpdateUserDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty({
-    type: String,
-    description: "User's Email.",
-    required: false,
-    example: "ahmed@example.com",
-  })
-  @IsOptional()
-  @IsEmail()
-  @IsString()
-  email: string;
+  // @ApiProperty({
+  //   type: String,
+  //   description: "User's Email.",
+  //   required: false,
+  //   example: "ahmed@example.com",
+  // })
+  // @IsOptional()
+  // @IsNotEmpty()
+  // @IsEmail()
+  // @IsString()
+  // email: string;
 
   @ApiProperty({
     type: String,
@@ -50,16 +54,16 @@ export class UpdateUserDto {
   @IsString()
   password: string;
 
-  @ApiProperty({
-    description: "The Phone Number for the user. Must be a valid phone number.",
-    example: "+20 1223658791",
-    type: String,
-    title: "Phone Number",
-  })
-  @IsOptional()
-  @IsNumberString()
-  @IsString()
-  phoneNumber: string;
+  // @ApiProperty({
+  //   description: "The Phone Number for the user. Must be a valid phone number.",
+  //   example: "+20 1223658791",
+  //   type: String,
+  //   title: "Phone Number",
+  // })
+  // @IsOptional()
+  // @IsNumberString()
+  // @IsString()
+  // phoneNumber: string;
 
   @ApiProperty({
     description: "The address for the user. Must be a valid address.",
@@ -70,4 +74,48 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   address: string;
+
+  @ApiProperty({
+    description: "Verification Token.",
+    example: "sfnjnjhjkhsdda",
+    type: String,
+    title: "Verification Token",
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  verificationToken: string;
+
+  @ApiProperty({
+    description: "Reset Token.",
+    example: "sfnjnjhjkhsdda",
+    type: String,
+    title: "Reset Token",
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  resetToken: string;
+
+  @ApiProperty({
+    description: "Reset Token Expiration Date.",
+    example: "2020-10-10",
+    type: String,
+    title: "Reset Token",
+  })
+  @IsOptional()
+  @IsDateString()
+  @IsString()
+  resetTokenExpirationDate: Date;
+
+  @ApiProperty({
+    description: "Verified Prop for the User.",
+    example: true,
+    type: Boolean,
+    title: "Verified",
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsBoolean()
+  verified: boolean;
 }

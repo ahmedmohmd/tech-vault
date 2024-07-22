@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
   IsEmail,
+  IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
@@ -32,6 +33,8 @@ export class SignUpDto {
     type: String,
     title: "Email",
   })
+  @IsOptional()
+  @IsNotEmpty()
   @IsEmail()
   @IsString()
   email: string;

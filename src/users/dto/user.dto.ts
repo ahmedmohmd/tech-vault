@@ -10,16 +10,18 @@ export class UserDto {
   @Expose()
   lastName: string;
 
+  @Transform(({ obj }) => obj.emails.map((email) => email.email))
   @Expose()
-  email: string;
+  emails: string[];
 
+  @Transform(({ obj }) => obj.phoneNumbers?.map((phone) => phone.phoneNumber))
   @Expose()
-  phoneNumber: string;
+  phoneNumbers: string[];
 
   @Expose()
   address: string;
 
-  @Transform(({ obj }) => obj.userImage?.url)
+  @Transform(({ obj }) => obj.userImage)
   @Expose()
   userImage: string;
 
