@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { RandomTokenService } from './random-token.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { RandomTokenService } from "./random-token.service";
 
-describe('RandomTokenService', () => {
+describe("RandomTokenService", () => {
   let service: RandomTokenService;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('RandomTokenService', () => {
     service = module.get<RandomTokenService>(RandomTokenService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

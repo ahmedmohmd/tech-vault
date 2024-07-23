@@ -2,9 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
   IsBoolean,
   IsDateString,
-  IsEmail,
   IsNotEmpty,
-  IsNumberString,
   IsOptional,
   IsString,
   IsStrongPassword,
@@ -31,18 +29,6 @@ export class UpdateUserDto {
   @IsString()
   lastName: string;
 
-  // @ApiProperty({
-  //   type: String,
-  //   description: "User's Email.",
-  //   required: false,
-  //   example: "ahmed@example.com",
-  // })
-  // @IsOptional()
-  // @IsNotEmpty()
-  // @IsEmail()
-  // @IsString()
-  // email: string;
-
   @ApiProperty({
     type: String,
     description: "User's Password.",
@@ -53,17 +39,6 @@ export class UpdateUserDto {
   @IsStrongPassword()
   @IsString()
   password: string;
-
-  // @ApiProperty({
-  //   description: "The Phone Number for the user. Must be a valid phone number.",
-  //   example: "+20 1223658791",
-  //   type: String,
-  //   title: "Phone Number",
-  // })
-  // @IsOptional()
-  // @IsNumberString()
-  // @IsString()
-  // phoneNumber: string;
 
   @ApiProperty({
     description: "The address for the user. Must be a valid address.",

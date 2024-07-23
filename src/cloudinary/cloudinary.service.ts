@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   v2 as cloudinary,
   DeleteApiResponse,
   UploadApiResponse,
-} from 'cloudinary';
+} from "cloudinary";
 
 @Injectable()
 export class CloudinaryService {
@@ -14,7 +14,7 @@ export class CloudinaryService {
     return new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
-          { resource_type: 'image', folder: folder },
+          { resource_type: "image", folder: folder },
           (error, result) => {
             if (error) return reject(error);
             resolve(result);
@@ -28,7 +28,7 @@ export class CloudinaryService {
     return new Promise((resolve, reject) => {
       cloudinary.uploader.destroy(
         publicId,
-        { resource_type: 'image' },
+        { resource_type: "image" },
         (error, result) => {
           if (error) return reject(error);
           resolve(result);

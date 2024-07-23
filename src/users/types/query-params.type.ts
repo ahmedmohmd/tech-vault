@@ -2,7 +2,7 @@ import {
   IFilterAttributes,
   IOrder,
   ISortAttributes,
-} from '../enums/query-params.enum';
+} from "../enums/query-params.enum";
 
 export interface IGetUsersQuery {
   page: string;

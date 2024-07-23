@@ -1,9 +1,9 @@
-import { MailerModule } from '@nestjs-modules/mailer';
-import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
-import { Global, Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { join } from 'path';
-import { MailService } from './mail.service';
+import { MailerModule } from "@nestjs-modules/mailer";
+import { EjsAdapter } from "@nestjs-modules/mailer/dist/adapters/ejs.adapter";
+import { Global, Module } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { join } from "path";
+import { MailService } from "./mail.service";
 
 @Global()
 @Module({
@@ -20,13 +20,13 @@ export class MailModule {
         MailerModule.forRootAsync({
           useFactory: (configService: ConfigService) => ({
             transport: {
-              host: configService.get<string>('MAIL_HOST'),
-              port: parseInt(configService.get<string>('MAIL_PORT')),
+              host: configService.get<string>("MAIL_HOST"),
+              port: parseInt(configService.get<string>("MAIL_PORT")),
               secure: false,
-              service: 'gmail',
+              service: "gmail",
               auth: {
-                user: configService.get<string>('MAIL_USERNAME'),
-                pass: configService.get<string>('MAIL_PASSWORD'),
+                user: configService.get<string>("MAIL_USERNAME"),
+                pass: configService.get<string>("MAIL_PASSWORD"),
               },
             },
 
@@ -34,7 +34,7 @@ export class MailModule {
               from: '"No Reply" <no-reply@gmail.com>',
             },
             template: {
-              dir: join(__dirname, 'templates'),
+              dir: join(__dirname, "templates"),
               adapter: new EjsAdapter(),
               options: {
                 strict: false,

@@ -4,9 +4,9 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { User } from '../users/user.entity';
-import { CartItem } from './cart-item.entity';
+} from "typeorm";
+import { User } from "../users/user.entity";
+import { CartItem } from "./cart-item.entity";
 
 @Entity()
 export class Cart {
@@ -14,8 +14,8 @@ export class Cart {
   id: number;
 
   @ManyToOne(() => User, (user) => user.carts, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
   })
   user: User;
 

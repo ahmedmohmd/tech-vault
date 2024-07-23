@@ -5,7 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-} from 'class-validator';
+} from "class-validator";
 
 export class UpdatePromoCodeDto {
   @IsOptional()

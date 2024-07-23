@@ -3,9 +3,9 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
-import { Observable, map } from 'rxjs';
+} from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import { Observable, map } from "rxjs";
 
 interface IDto {
   new (...args: any[]): object;

@@ -5,11 +5,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Product } from './product.entity';
+} from "typeorm";
+import { Product } from "./product.entity";
 
 @Entity({
-  name: 'products_images',
+  name: "products_images",
 })
 export class ProductImage {
   @PrimaryGeneratedColumn()
@@ -25,18 +25,18 @@ export class ProductImage {
   imagePublicId: string;
 
   @ManyToOne(() => Product, (product) => product.productScreenshots, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
   })
   product: Product;
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   updatedAt: Date;
 }

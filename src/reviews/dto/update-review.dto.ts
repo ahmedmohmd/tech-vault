@@ -5,7 +5,7 @@ import {
   IsString,
   Max,
   Min,
-} from 'class-validator';
+} from "class-validator";
 
 export class UpdateReviewDto {
   @IsOptional()

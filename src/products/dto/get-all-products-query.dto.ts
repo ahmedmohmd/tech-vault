@@ -1,4 +1,4 @@
-import { IsEnum, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumberString, IsOptional, IsString } from "class-validator";
 
 export class GetAllProductsQueryDto {
   @IsOptional()
@@ -7,11 +7,11 @@ export class GetAllProductsQueryDto {
 
   @IsOptional()
   @IsString()
-  @IsEnum(['price', 'name'])
+  @IsEnum(["price", "name"])
   sortBy: string;
 
   @IsOptional()
   @IsString()
-  @IsEnum(['ASC', 'DESC'])
+  @IsEnum(["ASC", "DESC"])
   order: string;
 }

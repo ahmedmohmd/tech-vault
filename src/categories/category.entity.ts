@@ -5,11 +5,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Product } from '../products/product.entity';
+} from "typeorm";
+import { Product } from "../products/product.entity";
 
 @Entity({
-  name: 'categories',
+  name: "categories",
 })
 export class Category {
   @PrimaryGeneratedColumn()
@@ -27,12 +27,12 @@ export class Category {
   products: Product[];
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   updatedAt: Date;
 }

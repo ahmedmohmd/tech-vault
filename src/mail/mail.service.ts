@@ -1,5 +1,5 @@
-import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { MailerService } from "@nestjs-modules/mailer";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 
 interface IMailOptions {
   from: string;
@@ -28,7 +28,7 @@ export class MailService {
       });
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 }

@@ -1,6 +1,6 @@
-import { BadRequestException } from '@nestjs/common';
-import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { BadRequestException } from "@nestjs/common";
+import { UseInterceptors } from "@nestjs/common/decorators/core/use-interceptors.decorator";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 export const UploadImage = (imageName: string) =>
   UseInterceptors(
@@ -8,7 +8,7 @@ export const UploadImage = (imageName: string) =>
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
           return callback(
-            new BadRequestException('JPG, JPEG, PNG image only allowed.'),
+            new BadRequestException("JPG, JPEG, PNG image only allowed."),
             false,
           );
         }

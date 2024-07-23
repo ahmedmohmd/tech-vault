@@ -1,5 +1,5 @@
-import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
-import { SerializeInterceptor } from './serialize.interceptor';
+import { UseInterceptors } from "@nestjs/common/decorators/core/use-interceptors.decorator";
+import { SerializeInterceptor } from "./serialize.interceptor";
 
 interface IDto {
   new (...args: any[]): object;

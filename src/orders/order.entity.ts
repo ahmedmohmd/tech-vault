@@ -1,4 +1,4 @@
-import { OrderItem } from '../orders/order-item.entity';
+import { OrderItem } from "../orders/order-item.entity";
 import {
   Column,
   CreateDateColumn,
@@ -7,12 +7,12 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { User } from '../users/user.entity';
-import { OrderStatus } from './enums/order-status.enum';
+} from "typeorm";
+import { User } from "../users/user.entity";
+import { OrderStatus } from "./enums/order-status.enum";
 
 @Entity({
-  name: 'orders',
+  name: "orders",
 })
 export class Order {
   @PrimaryGeneratedColumn()
@@ -36,18 +36,18 @@ export class Order {
   // total: number;
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: "timestamp",
   })
   updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.orders, {
-    onDelete: 'CASCADE',
-    onUpdate: 'NO ACTION',
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
   })
   user: User;
 

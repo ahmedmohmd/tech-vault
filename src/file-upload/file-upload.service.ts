@@ -1,5 +1,5 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
 
 interface IUploadImage {
   file: Express.Multer.File;
@@ -18,7 +18,7 @@ export class FileUploadService {
       return await this.cloudinaryService.uploadImage(file, path);
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 
@@ -27,7 +27,7 @@ export class FileUploadService {
       return await this.cloudinaryService.removeImage(imageId);
     } catch (error) {
       console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException('Internal server error.');
+      throw new InternalServerErrorException("Internal server error.");
     }
   }
 }
