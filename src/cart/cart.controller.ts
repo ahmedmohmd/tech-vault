@@ -8,28 +8,28 @@ import {
   Patch,
   Post,
   UseGuards,
-} from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { User } from 'src/common/decorators/user/user.decorator';
-import { CartService } from './cart.service';
-import { ApplyPromoCodeDto } from './dto/apply-promo-code.dto';
-import { CreateCartItemDto } from './dto/cart-item.dto';
-import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+} from "@nestjs/common";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
+import { User } from "../common/decorators/user/user.decorator";
+import { CartService } from "./cart.service";
+import { ApplyPromoCodeDto } from "./dto/apply-promo-code.dto";
+import { CreateCartItemDto } from "./dto/cart-item.dto";
+import { UpdateCartItemDto } from "./dto/update-cart-item.dto";
 
-@Controller('cart')
+@Controller("cart")
 @UseGuards(JwtAuthGuard)
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @Post('/add')
+  @Post("/add")
   async addItem(@User() user, @Body() Body: CreateCartItemDto) {
     return await this.cartService.addItemToCart(user?.userId, Body);
   }
 
-  @Patch(':itemId')
+  @Patch(":itemId")
   async updateItem(
     @User() user,
-    @Param('itemId', ParseIntPipe) itemId: number,
+    @Param("itemId", ParseIntPipe) itemId: number,
     @Body() updateCartItemDto: UpdateCartItemDto,
   ) {
     return await this.cartService.updateCartItem(
@@ -39,27 +39,27 @@ export class CartController {
     );
   }
 
-  @Delete(':itemId')
-  async removeItem(@User() user, @Param('itemId') itemId: number) {
+  @Delete(":itemId")
+  async removeItem(@User() user, @Param("itemId") itemId: number) {
     return await this.cartService.deleteCartItem(user?.userId, itemId);
   }
 
-  @Get('summary')
+  @Get("summary")
   getCartSummary(@User() user) {
     return this.cartService.getCartSummary(user?.userId);
   }
 
-  @Post('checkout')
+  @Post("checkout")
   async checkout(@User() user) {
     return await this.cartService.handlePayments(user?.userId);
   }
 
-  @Post('clear')
+  @Post("clear")
   public async clearCart(@User() user) {
     return await this.cartService.clearCart(user?.userId);
   }
 
-  @Post('apply-promo-code')
+  @Post("apply-promo-code")
   public async applyPromoCode(@User() user, @Body() body: ApplyPromoCodeDto) {
     return await this.cartService.applyPromoCode(user?.userId, body.code);
   }

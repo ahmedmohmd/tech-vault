@@ -2,16 +2,16 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CategoriesService } from 'src/categories/categories.service';
-import { FileUploadService } from 'src/file-upload/file-upload.service';
-import { Repository } from 'typeorm';
-import { CreateProductDto } from './dto/create-product.dto';
-import { GetAllProductsQueryDto } from './dto/get-all-products-query.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductImage } from './product-image.entity';
-import { Product } from './product.entity';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CategoriesService } from "../categories/categories.service";
+import { FileUploadService } from "../file-upload/file-upload.service";
+import { CreateProductDto } from "./dto/create-product.dto";
+import { GetAllProductsQueryDto } from "./dto/get-all-products-query.dto";
+import { UpdateProductDto } from "./dto/update-product.dto";
+import { ProductImage } from "./product-image.entity";
+import { Product } from "./product.entity";
 
 @Injectable()
 export class ProductsService {
@@ -25,19 +25,19 @@ export class ProductsService {
   ) {}
 
   public async getProduct(productId: number) {
-    const isProductExists = await this.isProductExists(productId);
-
-    if (!isProductExists) {
-      throw new NotFoundException('Product not Found!');
-    }
-
-    return await this.productsRepository.findOne({
+    const targetProduct = await this.productsRepository.findOne({
       where: {
         id: productId,
       },
 
-      relations: ['productScreenshots', 'reviews', 'category'],
+      relations: ["productScreenshots", "reviews", "category"],
     });
+
+    if (!targetProduct) {
+      throw new NotFoundException("Product not Found!");
+    }
+
+    return targetProduct;
   }
 
   public async getAllProducts(query: GetAllProductsQueryDto) {
@@ -47,16 +47,16 @@ export class ProductsService {
       );
 
       if (!isCategoryExists) {
-        throw new NotFoundException('Category not Found!');
+        throw new NotFoundException("Category not Found!");
       }
     }
 
     const queryBuilder = this.productsRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.productScreenshots', 'productScreenshots');
+      .createQueryBuilder("product")
+      .leftJoinAndSelect("product.productScreenshots", "productScreenshots");
 
     if (query.category) {
-      queryBuilder.where('product.categoryId = :categoryId', {
+      queryBuilder.where("product.categoryId = :categoryId", {
         categoryId: query.category,
       });
     }
@@ -64,21 +64,13 @@ export class ProductsService {
     if (query.sortBy) {
       queryBuilder.orderBy(
         `product.${query.sortBy}`,
-        query.order || ('ASC' as any),
+        query.order || ("ASC" as any),
       );
     }
 
     const products = await queryBuilder.getMany();
 
     return products;
-  }
-
-  public async isProductExists(productId: number) {
-    return await this.productsRepository.exists({
-      where: {
-        id: productId,
-      },
-    });
   }
 
   public async createProduct(
@@ -90,7 +82,7 @@ export class ProductsService {
     );
 
     if (!isCategoryExists) {
-      throw new NotFoundException('Category not Found!');
+      throw new NotFoundException("Category not Found!");
     }
 
     const targetCategory = await this.categoriesService.getSingleCategory(
@@ -131,19 +123,17 @@ export class ProductsService {
     productData?: UpdateProductDto,
     productScreenshots?: Array<Express.Multer.File>,
   ) {
-    const isProductExists = await this.isProductExists(productId);
-
-    if (!isProductExists) {
-      throw new NotFoundException('Product not Found!');
-    }
-
     const targetProduct = await this.productsRepository.findOne({
       where: {
         id: productId,
       },
 
-      relations: ['productScreenshots'],
+      relations: ["productScreenshots", "reviews", "category"],
     });
+
+    if (!targetProduct) {
+      throw new NotFoundException("Product not Found.");
+    }
 
     const updatedProduct = Object.assign(targetProduct, { ...productData });
 
@@ -154,7 +144,7 @@ export class ProductsService {
 
       if (existingScreenshotsCount + newScreenshotsCount > 4) {
         throw new BadRequestException(
-          'Product can have a maximum of 4 image screenshots.',
+          "Product can have a maximum of 4 image screenshots.",
         );
       }
 
@@ -182,19 +172,17 @@ export class ProductsService {
   }
 
   public async deleteProduct(productId: number) {
-    const isProductExists = await this.isProductExists(productId);
-
-    if (!isProductExists) {
-      throw new NotFoundException('Product not Found!');
-    }
-
     const targetProduct = await this.productsRepository.findOne({
       where: {
         id: productId,
       },
 
-      relations: ['productScreenshots'],
+      relations: ["productScreenshots"],
     });
+
+    if (!targetProduct) {
+      throw new NotFoundException("Product not Found.");
+    }
 
     if (targetProduct.productScreenshots?.length > 0) {
       for (const image of targetProduct.productScreenshots) {
@@ -214,17 +202,23 @@ export class ProductsService {
   }
 
   public async deleteProductScreenshot(productId: number, imageId: number) {
-    const isProductExists = await this.isProductExists(productId);
+    const targetProduct = await this.productsRepository.findOne({
+      where: {
+        id: productId,
+      },
 
-    if (!isProductExists) {
-      throw new NotFoundException('Product not Found!');
+      relations: ["productScreenshots"],
+    });
+
+    if (!targetProduct) {
+      throw new NotFoundException("Product not Found.");
     }
 
     const isProductScreenshotExists =
       await this.isProductScreenshotExists(imageId);
 
     if (!isProductScreenshotExists) {
-      throw new NotFoundException('Product Screenshot not Found!');
+      throw new NotFoundException("Product Screenshot not Found!");
     }
 
     const targetProductScreenshot = await this.productsImagesRepository.findOne(

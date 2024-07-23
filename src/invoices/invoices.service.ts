@@ -1,20 +1,18 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import * as fs from "fs/promises";
 import * as path from "path";
-import { OrdersService } from "src/orders/orders.service";
+import { OrdersService } from "../orders/orders.service";
 
 @Injectable()
 export class InvoicesService {
   constructor(private readonly ordersService: OrdersService) {}
 
   public async createInvoice(orderId: number) {
-    const isOrderExists = await this.ordersService.isOrderExists(orderId);
+    const targetOrder = await this.ordersService.findOrderById(orderId);
 
-    if (!isOrderExists) {
+    if (!targetOrder) {
       throw new NotFoundException("Order not Found.");
     }
-
-    const targetOrder = await this.ordersService.findOrderById(orderId);
 
     const invoiceData = {
       orderId: targetOrder.id,

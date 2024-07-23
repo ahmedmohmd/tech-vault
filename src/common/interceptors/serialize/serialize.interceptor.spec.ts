@@ -1,8 +1,8 @@
-import { UserDto } from '../../../users/dto/user.dto';
-import { SerializeInterceptor } from './serialize.interceptor';
+import { UserDto } from "../../../users/dto/user.dto";
+import { SerializeInterceptor } from "./serialize.interceptor";
 
-describe('SerializeInterceptor', () => {
-  it('should be defined', () => {
+describe("SerializeInterceptor", () => {
+  it("should be defined", () => {
     expect(new SerializeInterceptor(UserDto)).toBeDefined();
   });
 });

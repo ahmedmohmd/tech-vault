@@ -1,6 +1,6 @@
 import { Expose, Transform } from "class-transformer";
-import { Address } from "src/users/address.entity";
 import { JoinColumn, OneToOne } from "typeorm";
+import { Address } from "../../users/address.entity";
 import { OrderStatus } from "../enums/order-status.enum";
 import { OrderItem } from "../order-item.entity";
 

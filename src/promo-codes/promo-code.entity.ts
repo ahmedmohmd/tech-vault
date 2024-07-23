@@ -22,12 +22,6 @@ export class PromoCode {
     default: 0,
   })
   discount: number;
-  // @Column({
-  //   type: 'decimal',
-  //   transformer: new ColumnNumericTransformer(),
-  // })
-  // @Transform(({ value }) => value.toString())
-  // discount: number;
 
   @Column({
     type: "timestamp",

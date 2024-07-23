@@ -2,18 +2,18 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { OrdersService } from 'src/orders/orders.service';
-import { PaymentsService } from 'src/payments/payments.service';
-import { ProductsService } from 'src/products/products.service';
-import { PromoCodesService } from 'src/promo-codes/promocodes.service';
-import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
-import { CartItem } from './cart-item.entity';
-import { Cart } from './cart.entity';
-import { CreateCartItemDto } from './dto/cart-item.dto';
-import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { OrdersService } from "../orders/orders.service";
+import { PaymentsService } from "../payments/payments.service";
+import { ProductsService } from "../products/products.service";
+import { PromoCodesService } from "../promo-codes/promocodes.service";
+import { UsersService } from "../users/users.service";
+import { CartItem } from "./cart-item.entity";
+import { Cart } from "./cart.entity";
+import { CreateCartItemDto } from "./dto/cart-item.dto";
+import { UpdateCartItemDto } from "./dto/update-cart-item.dto";
 
 @Injectable()
 export class CartService {
@@ -40,14 +40,14 @@ export class CartService {
           },
         },
 
-        relations: ['items', 'user', 'items.product'],
+        relations: ["items", "user", "items.product"],
       });
     }
 
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException("User not found.");
     }
 
     const createdCart = this.cartRepository.create({
@@ -69,7 +69,7 @@ export class CartService {
     const targetProduct = await this.productsService.getProduct(productId);
 
     if (!targetProduct) {
-      throw new NotFoundException('Product not found.');
+      throw new NotFoundException("Product not found.");
     }
 
     // check if the item is in the cart or not
@@ -103,7 +103,7 @@ export class CartService {
     const itemFromCart = targetCart.items.find((item) => item.id === itemId);
 
     if (!itemFromCart) {
-      throw new NotFoundException('Cart Item not found.');
+      throw new NotFoundException("Cart Item not found.");
     }
 
     itemFromCart.quantity = quantity;
@@ -119,7 +119,7 @@ export class CartService {
       (item) => item.id === itemId,
     );
     if (cartItemIndex === -1) {
-      throw new NotFoundException('Cart item not found');
+      throw new NotFoundException("Cart item not found");
     }
 
     const [cartItem] = targetCart.items.splice(cartItemIndex, 1);
@@ -148,17 +148,16 @@ export class CartService {
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException("User not found.");
     }
 
     const targetCart = await this.findOrCreateCart(userId);
 
     if (targetCart.items.length <= 0) {
-      throw new NotFoundException('Your Cart is Empty.');
+      throw new NotFoundException("Your Cart is Empty.");
     }
 
-    const createdOrder = await this.ordersService.createOrder({
-      userId: userId,
+    const createdOrder = await this.ordersService.createOrder(userId, {
       items: targetCart.items.map((item) => ({
         productId: item.product.id,
         quantity: item.quantity,
@@ -172,7 +171,7 @@ export class CartService {
   public async applyPromoCode(userId: number, promoCode: string) {
     const targetCart = await this.findOrCreateCart(userId);
     if (targetCart.items.length <= 0) {
-      throw new BadRequestException('Cart is Empty.');
+      throw new BadRequestException("Cart is Empty.");
     }
 
     const targetPromoCode =
@@ -182,7 +181,7 @@ export class CartService {
       await this.promoCodesService.isValidPromoCode(targetPromoCode);
 
     if (!isValidPromoCode) {
-      throw new BadRequestException('Promo Code is Invalid.');
+      throw new BadRequestException("Promo Code is Invalid.");
     }
 
     targetCart.discount += targetPromoCode.discount;

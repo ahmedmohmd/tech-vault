@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { Notification } from './notification.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { UsersService } from "../users/users.service";
+import { CreateNotificationDto } from "./dto/create-notification.dto";
+import { Notification } from "./notification.entity";
 
 @Injectable()
 export class NotificationsService {
@@ -30,7 +30,7 @@ export class NotificationsService {
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
-      throw new NotFoundException('User not Found!');
+      throw new NotFoundException("User not Found!");
     }
 
     const createdNotification = this.notificationsRepository.create({
@@ -45,7 +45,7 @@ export class NotificationsService {
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
-      throw new NotFoundException('User not Found!');
+      throw new NotFoundException("User not Found!");
     }
 
     const targetNotification = await this.notificationsRepository.findOne({
@@ -55,7 +55,7 @@ export class NotificationsService {
     });
 
     if (!targetNotification) {
-      throw new NotFoundException('Notification not Found!');
+      throw new NotFoundException("Notification not Found!");
     }
 
     targetNotification.read = true;

@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Category } from './category.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Category } from "./category.entity";
+import { CreateCategoryDto } from "./dto/create-category.dto";
+import { UpdateCategoryDto } from "./dto/update-category.dto";
 
 @Injectable()
 export class CategoriesService {
@@ -15,7 +15,7 @@ export class CategoriesService {
   public async getAllCategories() {
     return await this.categoriesRepository.find({
       order: {
-        name: 'ASC',
+        name: "ASC",
       },
     });
   }
@@ -24,7 +24,7 @@ export class CategoriesService {
     const isCategoryExists = await this.isCategoryExists(categoryId);
 
     if (!isCategoryExists) {
-      throw new NotFoundException('Category not found.');
+      throw new NotFoundException("Category not found.");
     }
 
     return await this.categoriesRepository.findOne({
@@ -49,7 +49,7 @@ export class CategoriesService {
     const isCategoryExists = await this.isCategoryExists(categoryId);
 
     if (!isCategoryExists) {
-      throw new NotFoundException('Category not found.');
+      throw new NotFoundException("Category not found.");
     }
 
     const targetCategory = await this.categoriesRepository.findOne({
@@ -69,7 +69,7 @@ export class CategoriesService {
     const isCategoryExists = await this.isCategoryExists(categoryId);
 
     if (!isCategoryExists) {
-      throw new NotFoundException('Category not found.');
+      throw new NotFoundException("Category not found.");
     }
 
     const targetCategory = await this.categoriesRepository.findOne({

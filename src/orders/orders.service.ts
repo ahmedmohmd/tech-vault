@@ -1,12 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ProductsService } from '../products/products.service';
-import { UsersService } from '../users/users.service';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { OrderStatus } from './enums/order-status.enum';
-import { OrderItem } from './order-item.entity';
-import { Order } from './order.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { ProductsService } from "../products/products.service";
+import { UsersService } from "../users/users.service";
+import { CreateOrderDto } from "./dto/create-order.dto";
+import { OrderStatus } from "./enums/order-status.enum";
+import { OrderItem } from "./order-item.entity";
+import { Order } from "./order.entity";
 
 @Injectable()
 export class OrdersService {
@@ -21,15 +21,14 @@ export class OrdersService {
     private readonly productsService: ProductsService,
   ) {}
 
-  public async createOrder({
-    items,
-    userId,
-    discount,
-  }: CreateOrderDto): Promise<Order> {
+  public async createOrder(
+    userId: number,
+    { items, discount }: CreateOrderDto,
+  ): Promise<Order> {
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
-      throw new NotFoundException('User not Found.');
+      throw new NotFoundException("User not Found.");
     }
 
     const orderItems: OrderItem[] = [];
@@ -67,49 +66,39 @@ export class OrdersService {
 
   public async findAllOrders(): Promise<Order[]> {
     return await this.ordersRepository.find({
-      relations: ['user', 'items', 'items.product'],
+      relations: ["user", "items", "items.product"],
     });
   }
 
   public async findOrderById(orderId: number): Promise<Order> {
-    const isOrderExists = await this.isOrderExists(orderId);
+    const targetOrder = await this.ordersRepository.findOne({
+      where: {
+        id: orderId,
+      },
+      relations: ["user", "items", "items.product"],
+    });
 
-    if (!isOrderExists) {
-      throw new NotFoundException('Order not Found.');
+    if (!targetOrder) {
+      throw new NotFoundException("Order not Found.");
     }
 
-    return await this.ordersRepository.findOne({
-      where: {
-        id: orderId,
-      },
-      relations: ['user', 'items', 'items.product'],
-    });
-  }
-
-  public async isOrderExists(orderId: number): Promise<boolean> {
-    return await this.ordersRepository.exists({
-      where: {
-        id: orderId,
-      },
-    });
+    return targetOrder;
   }
 
   public async updateOrderStatus(
     orderId: number,
     status: OrderStatus,
   ): Promise<Order> {
-    const isOrderExists = await this.isOrderExists(orderId);
-
-    if (!isOrderExists) {
-      throw new NotFoundException('Order not Found.');
-    }
-
     const targetOrder = await this.ordersRepository.findOne({
       where: {
         id: orderId,
       },
-      relations: ['user', 'items', 'items.product'],
+      relations: ["user", "items", "items.product"],
     });
+
+    if (!targetOrder) {
+      throw new NotFoundException("Order not Found.");
+    }
 
     targetOrder.status = status;
 
@@ -117,18 +106,16 @@ export class OrdersService {
   }
 
   public async deleteOrder(orderId: number): Promise<Order> {
-    const isOrderExists = await this.isOrderExists(orderId);
-
-    if (!isOrderExists) {
-      throw new NotFoundException('Order not Found.');
-    }
-
     const targetOrder = await this.ordersRepository.findOne({
       where: {
         id: orderId,
       },
-      relations: ['user', 'items', 'items.product'],
+      relations: ["user", "items", "items.product"],
     });
+
+    if (!targetOrder) {
+      throw new NotFoundException("Order not Found.");
+    }
 
     return await this.ordersRepository.remove(targetOrder);
   }

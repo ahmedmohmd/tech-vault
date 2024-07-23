@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { FileUploadService } from './file-upload.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
+import { FileUploadService } from "./file-upload.service";
 
-describe('FileUploadService', () => {
+describe("FileUploadService", () => {
   let service: FileUploadService;
 
   beforeEach(async () => {
@@ -19,7 +19,7 @@ describe('FileUploadService', () => {
     service = module.get<FileUploadService>(FileUploadService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

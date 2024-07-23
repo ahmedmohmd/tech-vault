@@ -4,14 +4,10 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-} from 'class-validator';
-import { OrderItemDto } from './order-item.dto';
+} from "class-validator";
+import { OrderItemDto } from "./order-item.dto";
 
 export class CreateOrderDto {
-  @IsNotEmpty()
-  @IsNumber()
-  userId: number;
-
   @IsNotEmpty()
   @IsArray()
   @ArrayNotEmpty()

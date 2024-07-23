@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CategoriesModule } from 'src/categories/categories.module';
-import { FileUploadModule } from 'src/file-upload/file-upload.module';
-import { ProductImage } from './product-image.entity';
-import { Product } from './product.entity';
-import { ProductsController } from './products.controller';
-import { ProductsService } from './products.service';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { CategoriesModule } from "../categories/categories.module";
+import { FileUploadModule } from "../file-upload/file-upload.module";
+import { ProductImage } from "./product-image.entity";
+import { Product } from "./product.entity";
+import { ProductsController } from "./products.controller";
+import { ProductsService } from "./products.service";
 
 @Module({
   controllers: [ProductsController],

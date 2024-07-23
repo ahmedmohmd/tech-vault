@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreatePromoCodeDto } from './dto/create-promo-code.dto';
-import { UpdatePromoCodeDto } from './dto/update-promo-code.dto';
-import { PromoCode } from './promo-code.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CreatePromoCodeDto } from "./dto/create-promo-code.dto";
+import { GetAllPromoCodesQueryParamsDto } from "./dto/get-all-promocodes-query-params.dto";
+import { UpdatePromoCodeDto } from "./dto/update-promo-code.dto";
+import { PromoCode } from "./promo-code.entity";
 
 @Injectable()
 export class PromoCodesService {
@@ -20,15 +21,38 @@ export class PromoCodesService {
     });
 
     if (!targetPromoCode) {
-      throw new NotFoundException('Promo Code not Found.');
+      throw new NotFoundException("Promo Code not Found.");
     }
 
     return targetPromoCode;
   }
 
-  public async findAllPromoCodes() {
-    const allPromoCodes = await this.promoCodesRepository.find();
-    return allPromoCodes;
+  public async findAllPromoCodes(queryParams: GetAllPromoCodesQueryParamsDto) {
+    const promoCodesQueryBuilder =
+      this.promoCodesRepository.createQueryBuilder("promo_codes");
+
+    console.log(queryParams.active);
+
+    if (String(queryParams.active) === "true") {
+      promoCodesQueryBuilder.where("promo_codes.isActive = :activeValue", {
+        activeValue: queryParams.active,
+      });
+    }
+
+    if (String(queryParams.active) === "false") {
+      promoCodesQueryBuilder.where("promo_codes.isActive = :activeValue", {
+        activeValue: queryParams.active,
+      });
+    }
+
+    if (queryParams.sortBy) {
+      promoCodesQueryBuilder.orderBy(
+        `promo_codes.${queryParams.sortBy}`,
+        queryParams.order || "ASC",
+      );
+    }
+
+    return await promoCodesQueryBuilder.getMany();
   }
 
   public async createPromoCode(promoCodeData: CreatePromoCodeDto) {
@@ -39,7 +63,7 @@ export class PromoCodesService {
     });
 
     if (targetPromoCode) {
-      throw new NotFoundException('Promo is already Exists.');
+      throw new NotFoundException("Promo is already Exists.");
     }
 
     const createdPromoCode = this.promoCodesRepository.create(promoCodeData);
@@ -58,7 +82,7 @@ export class PromoCodesService {
     });
 
     if (!targetPromoCode) {
-      throw new NotFoundException('Promo Code not Found.');
+      throw new NotFoundException("Promo Code not Found.");
     }
 
     const updatedPromoCode = Object.assign(targetPromoCode, promoCodeData);
@@ -74,7 +98,7 @@ export class PromoCodesService {
     });
 
     if (!targetPromoCode) {
-      throw new NotFoundException('Promo Code not Found.');
+      throw new NotFoundException("Promo Code not Found.");
     }
 
     return await this.promoCodesRepository.remove(targetPromoCode);
@@ -97,9 +121,23 @@ export class PromoCodesService {
     });
 
     if (!targetPromoCode) {
-      throw new NotFoundException('Promo is Not Found.');
+      throw new NotFoundException("Promo is Not Found.");
     }
 
     return targetPromoCode;
+  }
+
+  public async clearAllNonActivePromoCodes() {
+    const allNonActivePromoCodes = await this.promoCodesRepository
+      .createQueryBuilder("promo_codes")
+      .where("promo_codes.isActive = false")
+      .orWhere("promo_codes.usageLimit <= promo_codes.usageCount")
+      .getMany();
+
+    for (const promoCode of allNonActivePromoCodes) {
+      await this.promoCodesRepository.remove(promoCode);
+    }
+
+    return;
   }
 }

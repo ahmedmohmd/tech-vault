@@ -1,8 +1,8 @@
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
-import { MailService } from "src/mail/mail.service";
 import { Repository } from "typeorm";
 import { FileUploadService } from "../file-upload/file-upload.service";
+import { MailService } from "../mail/mail.service";
 import { UserImage } from "./user-image.entity";
 import { User } from "./user.entity";
 import { UsersService } from "./users.service";

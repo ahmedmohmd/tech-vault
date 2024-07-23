@@ -2,14 +2,14 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProductsService } from 'src/products/products.service';
-import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
-import { Review } from './review.entity';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { ProductsService } from "../products/products.service";
+import { UsersService } from "../users/users.service";
+import { CreateReviewDto } from "./dto/create-review.dto";
+import { UpdateReviewDto } from "./dto/update-review.dto";
+import { Review } from "./review.entity";
 
 @Injectable()
 export class ReviewsService {
@@ -28,13 +28,13 @@ export class ReviewsService {
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
-      throw new NotFoundException('User Not Found.');
+      throw new NotFoundException("User Not Found.");
     }
 
     const targetProduct = await this.productsService.getProduct(productId);
 
     if (!targetProduct) {
-      throw new NotFoundException('Product Not Found.');
+      throw new NotFoundException("Product Not Found.");
     }
 
     const userReview = targetProduct.reviews.find((review) => {
@@ -43,7 +43,7 @@ export class ReviewsService {
 
     if (userReview) {
       throw new BadRequestException(
-        'Your are review this product in the past.',
+        "Your are review this product in the past.",
       );
     }
 
@@ -64,7 +64,7 @@ export class ReviewsService {
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
-      throw new NotFoundException('User Not Found.');
+      throw new NotFoundException("User Not Found.");
     }
 
     const targetReview = await this.reviewsRepository.findOne({
@@ -75,7 +75,7 @@ export class ReviewsService {
     });
 
     if (targetReview) {
-      throw new NotFoundException('Review Not Found.');
+      throw new NotFoundException("Review Not Found.");
     }
 
     const updatedReview = Object.assign(targetReview, { ...reviewData });
@@ -87,7 +87,7 @@ export class ReviewsService {
     const targetUser = await this.usersService.findUser(userId);
 
     if (!targetUser) {
-      throw new NotFoundException('User Not Found.');
+      throw new NotFoundException("User Not Found.");
     }
 
     const targetReview = await this.reviewsRepository.findOne({
@@ -98,7 +98,7 @@ export class ReviewsService {
     });
 
     if (targetReview) {
-      throw new NotFoundException('Review Not Found.');
+      throw new NotFoundException("Review Not Found.");
     }
 
     return await this.reviewsRepository.remove(targetReview);

@@ -1,18 +1,29 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PromoCodesService } from './promocodes.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { Repository } from "typeorm";
+import { PromoCode } from "./promo-code.entity";
+import { PromoCodesService } from "./promocodes.service";
 
-describe('PromoCodesService', () => {
+describe("PromoCodesService", () => {
   let service: PromoCodesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PromoCodesService],
+      providers: [
+        {
+          provide: PromoCodesService,
+          useValue: {},
+        },
+        {
+          provide: Repository<PromoCode>,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     service = module.get<PromoCodesService>(PromoCodesService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

@@ -9,19 +9,19 @@ import {
   Post,
   Query,
   UploadedFiles,
-} from '@nestjs/common';
-import { UploadImages } from 'src/common/decorators/upload-image/upload-images.decorator';
-import { CreateProductDto } from './dto/create-product.dto';
-import { GetAllProductsQueryDto } from './dto/get-all-products-query.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductsService } from './products.service';
+} from "@nestjs/common";
+import { UploadImages } from "../common/decorators/upload-image/upload-images.decorator";
+import { CreateProductDto } from "./dto/create-product.dto";
+import { GetAllProductsQueryDto } from "./dto/get-all-products-query.dto";
+import { UpdateProductDto } from "./dto/update-product.dto";
+import { ProductsService } from "./products.service";
 
-@Controller('products')
+@Controller("products")
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Get(':productId')
-  public async getProduct(@Param('productId', ParseIntPipe) productId: number) {
+  @Get(":productId")
+  public async getProduct(@Param("productId", ParseIntPipe) productId: number) {
     return await this.productsService.getProduct(productId);
   }
 
@@ -30,7 +30,7 @@ export class ProductsController {
     return await this.productsService.getAllProducts(query);
   }
 
-  @UploadImages('productScreenshots', 4)
+  @UploadImages("productScreenshots", 4)
   @Post()
   public async createProduct(
     @Body() body: CreateProductDto,
@@ -39,10 +39,10 @@ export class ProductsController {
     return await this.productsService.createProduct(body, screenshots);
   }
 
-  @UploadImages('productScreenshots', 4)
-  @Patch(':productId')
+  @UploadImages("productScreenshots", 4)
+  @Patch(":productId")
   public async updateProduct(
-    @Param('productId', ParseIntPipe) productId: number,
+    @Param("productId", ParseIntPipe) productId: number,
     @Body() body: UpdateProductDto,
     @UploadedFiles() screenshots: Array<Express.Multer.File>,
   ) {
@@ -53,17 +53,17 @@ export class ProductsController {
     );
   }
 
-  @Delete(':productId')
+  @Delete(":productId")
   public async deleteProduct(
-    @Param('productId', ParseIntPipe) productId: number,
+    @Param("productId", ParseIntPipe) productId: number,
   ) {
     return await this.productsService.deleteProduct(productId);
   }
 
-  @Delete(':productId/screenshots/:screenshotId')
+  @Delete(":productId/screenshots/:screenshotId")
   public async deleteProductScreenshot(
-    @Param('productId', ParseIntPipe) productId: number,
-    @Param('screenshotId', ParseIntPipe) screenshotId: number,
+    @Param("productId", ParseIntPipe) productId: number,
+    @Param("screenshotId", ParseIntPipe) screenshotId: number,
   ) {
     return await this.productsService.deleteProductScreenshot(
       productId,

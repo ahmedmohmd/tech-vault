@@ -6,8 +6,8 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
-import { SignUpDto } from "src/auth/dto/sign-up.dto";
-import { MailService } from "src/mail/mail.service";
+import { SignUpDto } from "../auth/dto/sign-up.dto";
+import { MailService } from "../mail/mail.service";
 import { Repository } from "typeorm";
 import { FileUploadService } from "../file-upload/file-upload.service";
 import { Address } from "./address.entity";

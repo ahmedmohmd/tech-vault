@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProductsService } from 'src/products/products.service';
-import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
-import { Wishlist } from './wishlist.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { ProductsService } from "../products/products.service";
+import { UsersService } from "../users/users.service";
+import { Wishlist } from "./wishlist.entity";
 
 @Injectable()
 export class WishlistService {
@@ -17,12 +17,12 @@ export class WishlistService {
   public async addToWishlist(userId: number, productId: number) {
     const targetUser = await this.usersService.findUser(userId);
     if (!targetUser) {
-      throw new NotFoundException('User Not Found.');
+      throw new NotFoundException("User Not Found.");
     }
 
     const targetProduct = await this.productsService.getProduct(productId);
     if (!targetProduct) {
-      throw new NotFoundException('Product Not Found.');
+      throw new NotFoundException("Product Not Found.");
     }
 
     const createdWishListItem = this.wishlistRepository.create({
@@ -47,7 +47,7 @@ export class WishlistService {
     });
 
     if (!targetWishlistItem) {
-      throw new NotFoundException('Wishlist Not Found.');
+      throw new NotFoundException("Wishlist Not Found.");
     }
 
     return await this.wishlistRepository.remove(targetWishlistItem);

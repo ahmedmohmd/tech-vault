@@ -1,17 +1,35 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { Repository } from 'typeorm';
-import { Product } from './product.entity';
-import { ProductsService } from './products.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { Repository } from "typeorm";
+import { CategoriesService } from "../categories/categories.service";
+import { FileUploadService } from "../file-upload/file-upload.service";
+import { ProductImage } from "./product-image.entity";
+import { Product } from "./product.entity";
+import { ProductsService } from "./products.service";
 
-describe('ProductsService', () => {
+describe("ProductsService", () => {
   let service: ProductsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ProductsService,
+        {
+          provide: ProductsService,
+          useValue: {},
+        },
         {
           provide: Repository<Product>,
+          useValue: {},
+        },
+        {
+          provide: Repository<ProductImage>,
+          useValue: {},
+        },
+        {
+          provide: FileUploadService,
+          useValue: {},
+        },
+        {
+          provide: CategoriesService,
           useValue: {},
         },
       ],
@@ -20,7 +38,7 @@ describe('ProductsService', () => {
     service = module.get<ProductsService>(ProductsService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });
