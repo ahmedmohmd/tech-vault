@@ -1,8 +1,5 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as paypal from "@paypal/checkout-server-sdk";
 import Stripe from "stripe";
@@ -14,22 +11,24 @@ import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class PaymentsService {
-  public readonly stripe: Stripe = new Stripe(
-    "sk_test_51PcXZgIgkBQ5uySUiMxFnqBqC7KrmQHAXmULQoSSA5m9Namq0WkDGjktwaqY1swiQE2H2riOAHMW7WJ8a4EQo0lJ00zfydquvR",
-    {
-      apiVersion: "2024-06-20",
-    },
-  );
-
-  private environment: paypal.core.SandboxEnvironment;
-  private client: paypal.core.PayPalHttpClient;
+  public readonly stripe: Stripe;
+  public readonly environment: paypal.core.SandboxEnvironment;
+  public readonly client: paypal.core.PayPalHttpClient;
 
   constructor(
     @InjectRepository(Order)
     private readonly ordersRepository: Repository<Order>,
     private readonly usersService: UsersService,
     private readonly ordersService: OrdersService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.stripe = new Stripe(
+      this.configService.get<string>("STRIPE_SECRET_KEY"),
+      {
+        apiVersion: "2024-06-20",
+      },
+    );
+  }
 
   async createPaymentIntent(orderId: number): Promise<Stripe.PaymentIntent> {
     const order = await this.ordersRepository.findOne({
@@ -74,38 +73,5 @@ export class PaymentsService {
         await this.ordersRepository.save(order);
       }
     }
-  }
-
-  public async createOrder(orderId: number) {
-    const targetOrder = await this.ordersService.findOrderById(orderId);
-
-    if (!targetOrder) {
-      throw new NotFoundException("Order not Found.");
-    }
-
-    const request = new paypal.orders.OrdersCreateRequest();
-    request.prefer("return=representation");
-    request.requestBody({
-      intent: "CAPTURE",
-      purchase_units: [
-        {
-          amount: {
-            currency_code: "USD",
-            value: (targetOrder.total = targetOrder.discount).toString(),
-          },
-        },
-      ],
-    });
-
-    const response = await this.client.execute(request);
-    return response.result;
-  }
-
-  async captureOrder(orderId: string) {
-    const request = new paypal.orders.OrdersCaptureRequest(orderId);
-    request.requestBody({});
-
-    const response = await this.client.execute(request);
-    return response.result;
   }
 }
