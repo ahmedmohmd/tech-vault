@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  InternalServerErrorException,
   Post,
   Query,
   Res,
@@ -13,14 +12,11 @@ import { AuthGuard } from "@nestjs/passport";
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
-  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { UploadImage } from "../common/decorators/upload-image/upload-image.decorator";
@@ -40,11 +36,11 @@ const dakeTokensResponseBody = {
 
 @ApiBearerAuth()
 @ApiTags("Auth")
-@ApiExtraModels(SignInDto, SignUpDto, RequestPasswordResetDto, ResetPasswordDto)
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Post("sign_up")
   @ApiOperation({ summary: "Sign Up with Credentials" })
   @ApiOkResponse({
     description: "Successful Sign Up",
@@ -62,7 +58,6 @@ export class AuthController {
       },
     },
   })
-  @Post("sign-up")
   @UploadImage("image")
   public async signUpWithCredentials(
     @Body() body: SignUpDto,
@@ -71,6 +66,7 @@ export class AuthController {
     return await this.authService.signUpWithCredentials(body, file);
   }
 
+  @Get("verify_email")
   @ApiOperation({ summary: "Verify Email" })
   @ApiOkResponse({
     description: "Email verification successful.",
@@ -88,33 +84,13 @@ export class AuthController {
       },
     },
   })
-  @ApiForbiddenResponse({
-    description: "Forbidden.",
-    schema: {
-      example: {
-        statusCode: 403,
-        message: "Forbidden.",
-        error: "Forbidden",
-      },
-    },
-  })
-  @ApiUnauthorizedResponse({
-    description: "Unauthorized.",
-    schema: {
-      example: {
-        statusCode: 401,
-        message: "Unauthorized.",
-        error: "Unauthorized",
-      },
-    },
-  })
-  @Get("verify-email")
   public async verifyEmail(
     @Query("verificationToken") verificationToken: string,
   ) {
     return await this.authService.verifyEmail(verificationToken);
   }
 
+  @Post("sign_in")
   @ApiOperation({ summary: "Sign In with Credentials" })
   @ApiOkResponse({
     description: "Successful Sign In",
@@ -148,7 +124,6 @@ export class AuthController {
       ttl: 3600000,
     },
   })
-  @Post("sign-in")
   public async SignIn(@Body() body: SignInDto) {
     return await this.authService.signIn(body);
   }
@@ -166,6 +141,8 @@ export class AuthController {
   @UseGuards(AuthGuard("google"))
   public async googleSignUp() {}
 
+  @Get("google/redirect")
+  @UseGuards(AuthGuard("google"))
   @ApiOperation({ summary: "Handle Google Authentication Redirect" })
   @ApiOkResponse({
     description: "Successful Google Authentication",
@@ -173,22 +150,11 @@ export class AuthController {
       example: dakeTokensResponseBody,
     },
   })
-  @ApiUnauthorizedResponse({
-    description: "Unauthorized.",
-    schema: {
-      example: {
-        statusCode: 401,
-        message: "Unauthorized.",
-        error: "Unauthorized",
-      },
-    },
-  })
-  @Get("google/redirect")
-  @UseGuards(AuthGuard("google"))
   public async googleAuth(@User() user, @Res() res) {
     return await this.authService.authWithGoogle(user, res);
   }
 
+  @Post("request_password_reset")
   @ApiOperation({ summary: "Request Password Reset" })
   @ApiOkResponse({
     description: "Password reset request successful.",
@@ -208,13 +174,13 @@ export class AuthController {
       },
     },
   })
-  @Post("request-password-reset")
   public async requestPasswordReset(
     @Body() { email }: RequestPasswordResetDto,
   ) {
     return await this.authService.requestPasswordReset(email);
   }
 
+  @Post("reset_password")
   @ApiOperation({ summary: "Reset Password" })
   @ApiOkResponse({
     description: "Password reset successful.",
@@ -234,35 +200,13 @@ export class AuthController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: "Unauthorized.",
-    schema: {
-      example: {
-        statusCode: 401,
-        message: "Unauthorized.",
-        error: "Unauthorized",
-      },
-    },
-  })
-  @Post("reset-password")
   public async resetPassword(
     @Body() body: ResetPasswordDto,
     @Query("resetToken") resetToken: string,
   ) {
-    try {
-      return await this.authService.resetPassword({
-        password: body.password,
-        resetToken,
-      });
-    } catch (error) {
-      console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException("Internal server error.");
-    }
+    return await this.authService.resetPassword({
+      password: body.password,
+      resetToken,
+    });
   }
-
-  // @Post("/add_email")
-  // public async addEmailToUser(@User()) {}
-
-  // @Delete("/delete_email")
-  // public async deleteEmailFromUser() {}
 }

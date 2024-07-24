@@ -10,6 +10,7 @@ import {
 } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
@@ -20,19 +21,24 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { Roles } from "src/users/decorators/roles.decorator";
+import { Role } from "src/users/enums/user-role.enum";
+import { RolesGuard } from "src/users/guards/roles.guard";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { User } from "../common/decorators/user/user.decorator";
 import { CreateReviewDto } from "./dto/create-review.dto";
 import { UpdateReviewDto } from "./dto/update-review.dto";
 import { ReviewsService } from "./reviews.service";
 
+@ApiBearerAuth()
 @ApiTags("Reviews")
 @Controller("reviews")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post(":product_id")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Create Product Review." })
   @ApiParam({ name: "product_id", type: Number })
   @ApiBody({ type: CreateReviewDto })
@@ -61,6 +67,7 @@ export class ReviewsController {
   }
 
   @Patch(":review_id")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Update Single Product Reviews." })
   @ApiParam({ name: "review_id", type: Number })
   @ApiBody({ type: UpdateReviewDto })
@@ -84,6 +91,7 @@ export class ReviewsController {
   }
 
   @Delete(":review_id")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Delete Single Product Reviews." })
   @ApiParam({ name: "review_id", type: Number })
   @ApiOkResponse({

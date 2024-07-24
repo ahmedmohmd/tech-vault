@@ -32,15 +32,19 @@ import { PhoneDto } from "./dto/phone-number.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserDto } from "./dto/user.dto";
 import { Role } from "./enums/user-role.enum";
+import { RolesGuard } from "./guards/roles.guard";
 import { UsersService } from "./users.service";
 
 @ApiBearerAuth()
 @ApiTags("Users")
 @Controller("users")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get()
+  @Serialize(UserDto)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Get all Registered Users." })
   @ApiOkResponse({
     isArray: true,
@@ -95,13 +99,13 @@ export class UsersController {
     status: 500,
     description: "Internal server error",
   })
-  @Serialize(UserDto)
-  @Roles(Role.ADMIN)
-  @Get()
   public async getAllUsers(@Query() query: GetAllUsersQueryDto) {
     return await this.usersService.getAllUsers(query);
   }
 
+  @Get("/me")
+  @Serialize(UserDto)
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOperation({ summary: "Get single User." })
   @ApiOkResponse({
     schema: {
@@ -139,13 +143,13 @@ export class UsersController {
     status: 500,
     description: "Internal server error",
   })
-  @Serialize(UserDto)
-  @Roles(Role.USER)
-  @Get("/me")
   public async getSingleUser(@User() user) {
     return await this.usersService.getSingleUser(user?.userId);
   }
 
+  @UploadImage("image")
+  @Patch("/me")
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOperation({ summary: "Update Registered User." })
   @ApiOkResponse({
     schema: {
@@ -183,8 +187,6 @@ export class UsersController {
     status: 500,
     description: "Internal server error",
   })
-  @UploadImage("image")
-  @Patch("/me")
   async updateUser(
     @User() user,
     @Body() body: UpdateUserDto,
@@ -198,6 +200,8 @@ export class UsersController {
     }
   }
 
+  @Delete("/me")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Delete a single existing User." })
   @ApiOkResponse({
     schema: {
@@ -235,12 +239,12 @@ export class UsersController {
     status: 500,
     description: "Internal server error",
   })
-  @Delete("/me")
   public async deleteUser(@User() user) {
     return await this.usersService.deleteUser(user?.userId);
   }
 
   @Post("add_email")
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOperation({ summary: "Add an email to the user." })
   @ApiOkResponse({
     description: "Email added successfully.",
@@ -269,6 +273,7 @@ export class UsersController {
   }
 
   @Delete("delete_email")
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOperation({ summary: "Delete an email from the user." })
   @ApiOkResponse({
     description: "Email deleted successfully.",
@@ -297,6 +302,7 @@ export class UsersController {
   }
 
   @Post("make_email_primary")
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOperation({ summary: "Make an email primary for the user." })
   @ApiOkResponse({
     description: "Email set as primary successfully.",
@@ -325,6 +331,7 @@ export class UsersController {
   }
 
   @Post("add_phone_number")
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOperation({ summary: "Add a phone number to the user." })
   @ApiOkResponse({
     description: "Phone number added successfully.",
@@ -356,6 +363,7 @@ export class UsersController {
   }
 
   @Delete("delete_phone_number")
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOperation({ summary: "Delete a phone number from the user." })
   @ApiOkResponse({
     description: "Phone number deleted successfully.",
@@ -387,6 +395,7 @@ export class UsersController {
   }
 
   @Post("make_phone_number_primary")
+  @Roles(Role.ADMIN, Role.ADMIN)
   @ApiOkResponse({
     description: "Phone number set as primary successfully.",
     schema: {

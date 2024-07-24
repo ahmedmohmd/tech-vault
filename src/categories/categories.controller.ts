@@ -7,8 +7,10 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from "@nestjs/common";
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
@@ -18,16 +20,24 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Public } from "src/users/decorators/public.decorator";
+import { Roles } from "src/users/decorators/roles.decorator";
+import { Role } from "src/users/enums/user-role.enum";
+import { RolesGuard } from "src/users/guards/roles.guard";
 import { CategoriesService } from "./categories.service";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
 
+ApiBearerAuth();
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags("Categories")
 @Controller("categories")
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
+  @Public()
   @ApiOperation({ summary: "Get all categories" })
   @ApiOkResponse({
     description: "List of all categories",
@@ -69,6 +79,7 @@ export class CategoriesController {
   }
 
   @Post()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Create a new category" })
   @ApiCreatedResponse({
     description: "The created category",
@@ -87,6 +98,7 @@ export class CategoriesController {
   }
 
   @Patch(":category_id")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Update an existing category" })
   @ApiParam({
     name: "category_id",
@@ -114,6 +126,7 @@ export class CategoriesController {
   }
 
   @Delete(":category_id")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Delete a category by ID" })
   @ApiParam({
     name: "category_id",

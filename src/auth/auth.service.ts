@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -145,7 +144,9 @@ export class AuthService {
 
       const jwtToken = await this.jwtService.sign(payload);
 
-      return res.redirect(`http://localhost:5173/google/redirect/${jwtToken}`);
+      return res.redirect(
+        `${this.configService.get<string>("FRONT_END_ENDPOINT")}/google/redirect/${jwtToken}`,
+      );
     }
 
     const createdUser = await this.usersService.createUser(
@@ -254,20 +255,13 @@ export class AuthService {
   }
 
   public async resetPassword({ resetToken, password }) {
-    try {
-      const { userId } = await this.validateResetToken(resetToken);
+    const { userId } = await this.validateResetToken(resetToken);
 
-      await this.usersService.updateUser(userId, {
-        password: password,
-      });
+    const updatedUser = await this.usersService.updateUser(userId, {
+      password: password,
+    });
 
-      return {
-        message: "User's password has updated successfully.",
-      };
-    } catch (error) {
-      console.error(`Internal Server Error: ${error}`);
-      throw new InternalServerErrorException("Internal server error.");
-    }
+    return updatedUser;
   }
 
   public async addEmailToUser(userId: number, email: string) {

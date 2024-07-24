@@ -70,6 +70,17 @@ export class OrdersService {
     });
   }
 
+  public async findAllUserOrders(userId: number): Promise<Order[]> {
+    return await this.ordersRepository.find({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+      relations: ["user", "items", "items.product"],
+    });
+  }
+
   public async findOrderById(orderId: number): Promise<Order> {
     const targetOrder = await this.ordersRepository.findOne({
       where: {

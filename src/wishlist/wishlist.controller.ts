@@ -1,5 +1,13 @@
-import { Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
+import {
+  ApiBearerAuth,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -9,15 +17,22 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Roles } from "src/users/decorators/roles.decorator";
+import { Role } from "src/users/enums/user-role.enum";
+import { RolesGuard } from "src/users/guards/roles.guard";
 import { User } from "../common/decorators/user/user.decorator";
 import { WishlistService } from "./wishlist.service";
 
+@ApiBearerAuth()
 @ApiTags("Wishlist")
 @Controller("wishlist")
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class WishlistController {
   constructor(private readonly wishlistService: WishlistService) {}
 
   @Get()
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "View User's Wishlist" })
   @ApiNotFoundResponse({ status: 404, description: "User Code not Found." })
   @ApiForbiddenResponse({ status: 403, description: "Forbidden." })
@@ -35,6 +50,7 @@ export class WishlistController {
   }
 
   @Post(":product_id")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Add Product to User's Wishlist." })
   @ApiParam({ name: "product_id", type: Number })
   @ApiOkResponse({
@@ -57,6 +73,7 @@ export class WishlistController {
   }
 
   @Delete(":product_id")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Remove Product from User's Wishlist." })
   @ApiParam({ name: "product_id", type: Number })
   @ApiOkResponse({

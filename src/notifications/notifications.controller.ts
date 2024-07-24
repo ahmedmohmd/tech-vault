@@ -1,4 +1,11 @@
-import { Controller, Get, Param, ParseIntPipe, Patch } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  UseGuards,
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -6,16 +13,22 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Roles } from "src/users/decorators/roles.decorator";
+import { Role } from "src/users/enums/user-role.enum";
+import { RolesGuard } from "src/users/guards/roles.guard";
 import { User } from "../common/decorators/user/user.decorator";
 import { NotificationsService } from "./notifications.service";
 
 @ApiBearerAuth()
-@Controller("notifications")
 @ApiTags("Notifications")
+@Controller("notifications")
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class NotificationsController {
   constructor(private readonly notificationService: NotificationsService) {}
 
   @Get()
+  @Roles(Role.USER)
   @ApiOperation({ summary: "Get all notifications for the user." })
   @ApiResponse({
     status: 200,
@@ -37,6 +50,7 @@ export class NotificationsController {
   }
 
   @Patch(":notification_id")
+  @Roles(Role.USER)
   @ApiOperation({ summary: "Mark a notification as read." })
   @ApiResponse({
     status: 200,

@@ -1,5 +1,6 @@
-import { Controller, Param, Post, Req } from "@nestjs/common";
+import { Controller, Param, Post, Req, UseGuards } from "@nestjs/common";
 import {
+  ApiBearerAuth,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiOperation,
@@ -7,14 +8,21 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Roles } from "src/users/decorators/roles.decorator";
+import { Role } from "src/users/enums/user-role.enum";
+import { RolesGuard } from "src/users/guards/roles.guard";
 import { PaymentsService } from "./payments.service";
 
+@ApiBearerAuth()
 @ApiTags("Payments")
 @Controller("payments")
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
   @Post("create-payment-intent/:orderId")
+  @Roles(Role.USER)
   @ApiOperation({ summary: "Create a payment intent" })
   @ApiResponse({
     status: 200,
@@ -34,6 +42,7 @@ export class PaymentsController {
   }
 
   @Post("webhook")
+  @Roles(Role.USER)
   @ApiOperation({ summary: "Handle Stripe webhook" })
   @ApiResponse({
     status: 200,

@@ -8,9 +8,11 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -20,17 +22,24 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Roles } from "src/users/decorators/roles.decorator";
+import { Role } from "src/users/enums/user-role.enum";
+import { RolesGuard } from "src/users/guards/roles.guard";
 import { CreatePromoCodeDto } from "./dto/create-promo-code.dto";
 import { GetAllPromoCodesQueryParamsDto } from "./dto/get-all-promo-codes-query-params.dto";
 import { UpdatePromoCodeDto } from "./dto/update-promo-code.dto";
 import { PromoCodesService } from "./promo-codes.service";
 
+@ApiBearerAuth()
 @ApiTags("Promo Codes")
 @Controller("promo_codes")
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PromoCodesController {
   constructor(private readonly promoCodesService: PromoCodesService) {}
 
   @Get()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Get all promo codes" })
   @ApiOkResponse({
     status: 200,
@@ -45,6 +54,7 @@ export class PromoCodesController {
   }
 
   @Get(":promo_code_id")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Get a single promo code by ID" })
   @ApiParam({ name: "promo_code_id", type: Number })
   @ApiNotFoundResponse({ status: 404, description: "Promo Code not Found." })
@@ -61,6 +71,7 @@ export class PromoCodesController {
   }
 
   @Post()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Create a new promo code" })
   @ApiBody({ type: CreatePromoCodeDto })
   @ApiOkResponse({
@@ -75,6 +86,7 @@ export class PromoCodesController {
   }
 
   @Patch(":promo_code_id")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Update an existing promo code" })
   @ApiParam({ name: "promo_code_id", type: Number })
   @ApiBody({ type: UpdatePromoCodeDto })
@@ -94,6 +106,7 @@ export class PromoCodesController {
   }
 
   @Delete("remove_expired")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Remove all expired and non-active promo codes" })
   @ApiOkResponse({
     status: 200,
@@ -107,6 +120,7 @@ export class PromoCodesController {
   }
 
   @Delete(":promo_code_id")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Delete a promo code by ID" })
   @ApiParam({ name: "promo_code_id", type: Number })
   @ApiOkResponse({

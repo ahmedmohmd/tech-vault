@@ -37,6 +37,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Get()
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Get all orders." })
   @ApiResponse({
     status: 200,
@@ -48,8 +49,21 @@ export class OrdersController {
     return await this.ordersService.findAllOrders();
   }
 
+  @Get()
   @Roles(Role.ADMIN, Role.USER)
+  @ApiOperation({ summary: "Get all user's orders." })
+  @ApiResponse({
+    status: 200,
+    description: "Array of orders.",
+    isArray: true,
+    type: OrderDto,
+  })
+  public async getAllUserOrders(@User() user) {
+    return await this.ordersService.findAllUserOrders(user?.userId);
+  }
+
   @Get(":order_id")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Get a single order by ID." })
   @ApiResponse({
     status: 200,
@@ -72,8 +86,8 @@ export class OrdersController {
     return await this.ordersService.findOrderById(orderId);
   }
 
-  @Roles(Role.ADMIN, Role.USER)
   @Post()
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Create a new order." })
   @ApiResponse({
     status: 201,
@@ -90,8 +104,8 @@ export class OrdersController {
     return await this.ordersService.createOrder(user?.userId, body);
   }
 
-  @Roles(Role.ADMIN, Role.USER)
   @Patch(":order_id")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Update the status of an order." })
   @ApiResponse({
     status: 200,
@@ -119,8 +133,8 @@ export class OrdersController {
     return await this.ordersService.updateOrderStatus(orderId, body.status);
   }
 
-  @Roles(Role.ADMIN)
   @Delete(":order_id")
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: "Delete an order by ID." })
   @ApiResponse({
     status: 200,

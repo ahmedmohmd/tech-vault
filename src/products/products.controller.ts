@@ -13,6 +13,7 @@ import {
 } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -22,6 +23,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { Public } from "src/users/decorators/public.decorator";
+import { Roles } from "src/users/decorators/roles.decorator";
+import { Role } from "src/users/enums/user-role.enum";
+import { RolesGuard } from "src/users/guards/roles.guard";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { UploadImages } from "../common/decorators/upload-image/upload-images.decorator";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -29,13 +34,15 @@ import { GetAllProductsQueryDto } from "./dto/get-all-products-query.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { ProductsService } from "./products.service";
 
+@ApiBearerAuth()
 @ApiTags("Products")
 @Controller("products")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get(":product_id")
+  @Public()
   @ApiOperation({ summary: "Get a single Product by ID" })
   @ApiParam({ name: "product_id", type: Number })
   @ApiNotFoundResponse({ status: 404, description: "Product not Found." })
@@ -52,6 +59,7 @@ export class ProductsController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: "Get all Products." })
   @ApiOkResponse({
     status: 200,
@@ -65,6 +73,7 @@ export class ProductsController {
 
   @UploadImages("productScreenshots", 4)
   @Post()
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Create a new Product" })
   @ApiBody({ type: CreateProductDto })
   @ApiOkResponse({
@@ -83,6 +92,7 @@ export class ProductsController {
 
   @UploadImages("productScreenshots", 4)
   @Patch(":product_id")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Update an existing Product" })
   @ApiParam({ name: "product_id", type: Number })
   @ApiBody({ type: UpdateProductDto })
@@ -107,6 +117,7 @@ export class ProductsController {
   }
 
   @Delete(":product_id")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Delete a Product." })
   @ApiParam({ name: "product_id", type: Number })
   @ApiOkResponse({
@@ -126,6 +137,7 @@ export class ProductsController {
   }
 
   @Delete(":product_id/screenshots/:screenshot_id")
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: "Delete a Product's Screenshot" })
   @ApiParam({ name: "product_id", type: Number })
   @ApiParam({ name: "screenshot_id", type: Number })
