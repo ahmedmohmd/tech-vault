@@ -2,6 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { Repository } from "typeorm";
 import { CategoriesService } from "../categories/categories.service";
 import { FileUploadService } from "../file-upload/file-upload.service";
+import { ReviewsService } from "../reviews/reviews.service";
 import { ProductImage } from "./product-image.entity";
 import { Product } from "./product.entity";
 import { ProductsService } from "./products.service";

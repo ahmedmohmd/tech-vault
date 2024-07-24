@@ -8,7 +8,7 @@ import { Repository } from "typeorm";
 import { OrdersService } from "../orders/orders.service";
 import { PaymentsService } from "../payments/payments.service";
 import { ProductsService } from "../products/products.service";
-import { PromoCodesService } from "../promo-codes/promocodes.service";
+import { PromoCodesService } from "../promo-codes/promo-codes.service";
 import { UsersService } from "../users/users.service";
 import { CartItem } from "./cart-item.entity";
 import { Cart } from "./cart.entity";

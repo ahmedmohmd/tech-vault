@@ -25,7 +25,7 @@ import { ProductImage } from "./products/product-image.entity";
 import { Product } from "./products/product.entity";
 import { ProductsModule } from "./products/products.module";
 import { PromoCode } from "./promo-codes/promo-code.entity";
-import { PromoCodesModule } from "./promo-codes/promocodes.module";
+import { PromoCodesModule } from "./promo-codes/promo-codes.module";
 import { Review } from "./reviews/review.entity";
 import { ReviewsModule } from "./reviews/reviews.module";
 import { Address } from "./users/address.entity";

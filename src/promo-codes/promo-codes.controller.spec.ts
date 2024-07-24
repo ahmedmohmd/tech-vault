@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { PromoCodesController } from "./promocodes.controller";
-import { PromoCodesService } from "./promocodes.service";
+import { PromoCodesController } from "./promo-codes.controller";
+import { PromoCodesService } from "./promo-codes.service";
 
 describe("PromoCodesController", () => {
   let controller: PromoCodesController;

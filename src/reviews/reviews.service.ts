@@ -37,16 +37,6 @@ export class ReviewsService {
       throw new NotFoundException("Product Not Found.");
     }
 
-    const userReview = targetProduct.reviews.find((review) => {
-      return review.user.id === targetUser.id;
-    });
-
-    if (userReview) {
-      throw new BadRequestException(
-        "Your are review this product in the past.",
-      );
-    }
-
     const createdReview = this.reviewsRepository.create({
       ...reviewData,
       user: targetUser,
@@ -69,12 +59,14 @@ export class ReviewsService {
 
     const targetReview = await this.reviewsRepository.findOne({
       where: {
-        user: targetUser,
+        user: {
+          id: userId,
+        },
         id: reviewId,
       },
     });
 
-    if (targetReview) {
+    if (!targetReview) {
       throw new NotFoundException("Review Not Found.");
     }
 
@@ -101,6 +93,8 @@ export class ReviewsService {
       throw new NotFoundException("Review Not Found.");
     }
 
-    return await this.reviewsRepository.remove(targetReview);
+    await this.reviewsRepository.remove(targetReview);
+
+    return;
   }
 }

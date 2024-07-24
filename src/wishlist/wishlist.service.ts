@@ -54,6 +54,12 @@ export class WishlistService {
   }
 
   public async viewWishlist(userId: number) {
+    const targetUser = await this.usersService.findUser(userId);
+
+    if (!targetUser) {
+      throw new NotFoundException("User not Found.");
+    }
+
     return await this.wishlistRepository.find({
       where: {
         user: {

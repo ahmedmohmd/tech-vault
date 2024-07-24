@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreatePromoCodeDto } from "./dto/create-promo-code.dto";
-import { GetAllPromoCodesQueryParamsDto } from "./dto/get-all-promocodes-query-params.dto";
+import { GetAllPromoCodesQueryParamsDto } from "./dto/get-all-promo-codes-query-params.dto";
 import { UpdatePromoCodeDto } from "./dto/update-promo-code.dto";
 import { PromoCode } from "./promo-code.entity";
 
@@ -30,8 +30,6 @@ export class PromoCodesService {
   public async findAllPromoCodes(queryParams: GetAllPromoCodesQueryParamsDto) {
     const promoCodesQueryBuilder =
       this.promoCodesRepository.createQueryBuilder("promo_codes");
-
-    console.log(queryParams.active);
 
     if (String(queryParams.active) === "true") {
       promoCodesQueryBuilder.where("promo_codes.isActive = :activeValue", {
@@ -63,7 +61,7 @@ export class PromoCodesService {
     });
 
     if (targetPromoCode) {
-      throw new NotFoundException("Promo is already Exists.");
+      throw new NotFoundException("Promo Code is already Exists.");
     }
 
     const createdPromoCode = this.promoCodesRepository.create(promoCodeData);
@@ -101,7 +99,7 @@ export class PromoCodesService {
       throw new NotFoundException("Promo Code not Found.");
     }
 
-    return await this.promoCodesRepository.remove(targetPromoCode);
+    return;
   }
 
   public async isValidPromoCode(promoCode: PromoCode) {
@@ -133,6 +131,10 @@ export class PromoCodesService {
       .where("promo_codes.isActive = false")
       .orWhere("promo_codes.usageLimit <= promo_codes.usageCount")
       .getMany();
+
+    if (allNonActivePromoCodes.length <= 0) {
+      return;
+    }
 
     for (const promoCode of allNonActivePromoCodes) {
       await this.promoCodesRepository.remove(promoCode);

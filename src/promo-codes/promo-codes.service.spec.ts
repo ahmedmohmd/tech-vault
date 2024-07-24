@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { Repository } from "typeorm";
 import { PromoCode } from "./promo-code.entity";
-import { PromoCodesService } from "./promocodes.service";
+import { PromoCodesService } from "./promo-codes.service";
 
 describe("PromoCodesService", () => {
   let service: PromoCodesService;

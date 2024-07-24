@@ -8,6 +8,7 @@ import { Repository } from "typeorm";
 import { CategoriesService } from "../categories/categories.service";
 import { FileUploadService } from "../file-upload/file-upload.service";
 import { CreateProductDto } from "./dto/create-product.dto";
+
 import { GetAllProductsQueryDto } from "./dto/get-all-products-query.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { ProductImage } from "./product-image.entity";
@@ -53,7 +54,8 @@ export class ProductsService {
 
     const queryBuilder = this.productsRepository
       .createQueryBuilder("product")
-      .leftJoinAndSelect("product.productScreenshots", "productScreenshots");
+      .leftJoinAndSelect("product.productScreenshots", "productScreenshots")
+      .leftJoinAndSelect("product.reviews", "reviews");
 
     if (query.category) {
       queryBuilder.where("product.categoryId = :categoryId", {
@@ -62,15 +64,31 @@ export class ProductsService {
     }
 
     if (query.sortBy) {
-      queryBuilder.orderBy(
-        `product.${query.sortBy}`,
-        query.order || ("ASC" as any),
-      );
+      queryBuilder.orderBy(`product.${query.sortBy}`, query.order || "ASC");
     }
+
+    if (query.search) {
+      queryBuilder.andWhere(`product.name LIKE :searchTerm`, {
+        searchTerm: `%${query.search}%`,
+      });
+    }
+
+    const allProducts = await queryBuilder.getCount();
+
+    queryBuilder.limit(query.page_size || 12);
+    queryBuilder.offset(
+      ((query.page_number || 1) - 1) * (query.page_size || 12),
+    );
 
     const products = await queryBuilder.getMany();
 
-    return products;
+    return {
+      data: products,
+      page: +query.page_number || 1,
+      page_size: +query.page_size || 12,
+      total_pages: Math.round(allProducts / (query.page_size || 12)),
+      total_count: allProducts,
+    };
   }
 
   public async createProduct(
@@ -190,7 +208,9 @@ export class ProductsService {
       }
     }
 
-    return await this.productsRepository.remove(targetProduct);
+    await this.productsRepository.remove(targetProduct);
+
+    return;
   }
 
   public async isProductScreenshotExists(screenshotId: number) {
@@ -233,6 +253,8 @@ export class ProductsService {
       targetProductScreenshot.imagePublicId,
     );
 
-    return await this.productsImagesRepository.remove(targetProductScreenshot);
+    await this.productsImagesRepository.remove(targetProductScreenshot);
+
+    return;
   }
 }
