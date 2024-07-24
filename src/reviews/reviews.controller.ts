@@ -12,6 +12,7 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiForbiddenResponse,
+  ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -43,6 +44,10 @@ export class ReviewsController {
   @ApiUnauthorizedResponse({ status: 401, description: "Unauthorized." })
   @ApiForbiddenResponse({ status: 403, description: "Forbidden." })
   @ApiBadRequestResponse({ status: 400, description: "Invalid input data." })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
+  })
   public async createReview(
     @User() user,
     @Body() body: CreateReviewDto,
@@ -66,6 +71,10 @@ export class ReviewsController {
   @ApiBadRequestResponse({ status: 400, description: "Invalid input data." })
   @ApiForbiddenResponse({ status: 403, description: "Forbidden." })
   @ApiUnauthorizedResponse({ status: 401, description: "Unauthorized." })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
+  })
   public async updateReview(
     @User() user,
     @Body() body: UpdateReviewDto,
@@ -84,6 +93,10 @@ export class ReviewsController {
   @ApiNotFoundResponse({
     status: 404,
     description: "Product Review not Found.",
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
   })
   public async deleteReview(
     @User() user,

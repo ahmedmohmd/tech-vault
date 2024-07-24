@@ -1,6 +1,7 @@
 import { Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import {
   ApiForbiddenResponse,
+  ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -25,6 +26,10 @@ export class WishlistController {
     status: 200,
     description: "Successfully retrieved Wishlist.",
   })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
+  })
   public async viewWishlist(@User() user) {
     return this.wishlistService.viewWishlist(user?.userId);
   }
@@ -40,6 +45,10 @@ export class WishlistController {
   @ApiNotFoundResponse({ status: 404, description: "Product Code not Found." })
   @ApiForbiddenResponse({ status: 403, description: "Forbidden." })
   @ApiUnauthorizedResponse({ status: 401, description: "Unauthorized." })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
+  })
   public async addToWishlist(
     @User() user,
     @Param("product_id") productId: number,
@@ -58,6 +67,10 @@ export class WishlistController {
   @ApiNotFoundResponse({ status: 404, description: "Product not Found." })
   @ApiForbiddenResponse({ status: 403, description: "Forbidden." })
   @ApiUnauthorizedResponse({ status: 401, description: "Unauthorized." })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
+  })
   public async deleteFromWishlist(
     @User() user,
     @Param("product_id") productId: number,

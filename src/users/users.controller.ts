@@ -13,6 +13,7 @@ import {
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
+  ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -90,6 +91,10 @@ export class UsersController {
       example: "Unauthorized.",
     },
   })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
+  })
   @Serialize(UserDto)
   @Roles(Role.ADMIN)
   @Get()
@@ -130,6 +135,10 @@ export class UsersController {
       example: "User not Found.",
     },
   })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
+  })
   @Serialize(UserDto)
   @Roles(Role.USER)
   @Get("/me")
@@ -169,6 +178,10 @@ export class UsersController {
     schema: {
       example: "User not Found.",
     },
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
   })
   @UploadImage("image")
   @Patch("/me")
@@ -218,27 +231,123 @@ export class UsersController {
       example: "User not Found.",
     },
   })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error",
+  })
   @Delete("/me")
   public async deleteUser(@User() user) {
     return await this.usersService.deleteUser(user?.userId);
   }
 
   @Post("add_email")
+  @ApiOperation({ summary: "Add an email to the user." })
+  @ApiOkResponse({
+    description: "Email added successfully.",
+    schema: {
+      example: "Email added successfully.",
+    },
+  })
+  @ApiForbiddenResponse({
+    description: "Forbidden.",
+    schema: {
+      example: "Forbidden.",
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "Unauthorized.",
+    schema: {
+      example: "Unauthorized.",
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error.",
+  })
   public async addEmailToUser(@User() user, @Body() body: EmailDto) {
     return await this.usersService.addEmail(user?.userId, body.email);
   }
 
   @Delete("delete_email")
+  @ApiOperation({ summary: "Delete an email from the user." })
+  @ApiOkResponse({
+    description: "Email deleted successfully.",
+    schema: {
+      example: "Email deleted successfully.",
+    },
+  })
+  @ApiForbiddenResponse({
+    description: "Forbidden.",
+    schema: {
+      example: "Forbidden.",
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "Unauthorized.",
+    schema: {
+      example: "Unauthorized.",
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error.",
+  })
   public async deleteEmailFromUser(@User() user, @Body() body: EmailDto) {
     return await this.usersService.deleteEmail(user?.userId, body.email);
   }
 
   @Post("make_email_primary")
+  @ApiOperation({ summary: "Make an email primary for the user." })
+  @ApiOkResponse({
+    description: "Email set as primary successfully.",
+    schema: {
+      example: "Email set as primary successfully.",
+    },
+  })
+  @ApiForbiddenResponse({
+    description: "Forbidden.",
+    schema: {
+      example: "Forbidden.",
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "Unauthorized.",
+    schema: {
+      example: "Unauthorized.",
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error.",
+  })
   public async makeEmailPrimary(@User() user, @Body() body: EmailDto) {
     return await this.usersService.makeEmailPrimary(user?.userId, body.email);
   }
 
   @Post("add_phone_number")
+  @ApiOperation({ summary: "Add a phone number to the user." })
+  @ApiOkResponse({
+    description: "Phone number added successfully.",
+    schema: {
+      example: "Phone number added successfully.",
+    },
+  })
+  @ApiForbiddenResponse({
+    description: "Forbidden.",
+    schema: {
+      example: "Forbidden.",
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "Unauthorized.",
+    schema: {
+      example: "Unauthorized.",
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error.",
+  })
   public async addPhoneNumber(@User() user, @Body() body: PhoneDto) {
     return await this.usersService.addPhoneNumber(
       user?.userId,
@@ -247,6 +356,29 @@ export class UsersController {
   }
 
   @Delete("delete_phone_number")
+  @ApiOperation({ summary: "Delete a phone number from the user." })
+  @ApiOkResponse({
+    description: "Phone number deleted successfully.",
+    schema: {
+      example: "Phone number deleted successfully.",
+    },
+  })
+  @ApiForbiddenResponse({
+    description: "Forbidden.",
+    schema: {
+      example: "Forbidden.",
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "Unauthorized.",
+    schema: {
+      example: "Unauthorized.",
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error.",
+  })
   public async deletePhoneNumberFromUser(@User() user, @Body() body: PhoneDto) {
     return await this.usersService.deletePhoneNumber(
       user?.userId,
@@ -255,6 +387,28 @@ export class UsersController {
   }
 
   @Post("make_phone_number_primary")
+  @ApiOkResponse({
+    description: "Phone number set as primary successfully.",
+    schema: {
+      example: "Phone number set as primary successfully.",
+    },
+  })
+  @ApiForbiddenResponse({
+    description: "Forbidden.",
+    schema: {
+      example: "Forbidden.",
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "Unauthorized.",
+    schema: {
+      example: "Unauthorized.",
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: "Internal server error.",
+  })
   public async makePhoneNumberPrimary(@User() user, @Body() body: PhoneDto) {
     return await this.usersService.makePhoneNumberPrimary(
       user?.userId,

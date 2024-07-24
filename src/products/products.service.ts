@@ -67,6 +67,18 @@ export class ProductsService {
       queryBuilder.orderBy(`product.${query.sortBy}`, query.order || "ASC");
     }
 
+    if (query.min_price) {
+      queryBuilder.andWhere(`product.prices <= :priceValue`, {
+        priceValue: query.min_price,
+      });
+    }
+
+    if (query.max_price) {
+      queryBuilder.andWhere(`product.prices >= :priceValue`, {
+        priceValue: query.max_price,
+      });
+    }
+
     if (query.search) {
       queryBuilder.andWhere(`product.name LIKE :searchTerm`, {
         searchTerm: `%${query.search}%`,
