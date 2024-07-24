@@ -1,8 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { Repository } from "typeorm";
 import { Order } from "../orders/order.entity";
-import { OrdersService } from "../orders/orders.service";
-import { UsersService } from "../users/users.service";
 import { PaymentsService } from "./payments.service";
 
 describe("PaymentsService", () => {
@@ -17,14 +15,6 @@ describe("PaymentsService", () => {
         },
         {
           provide: Repository<Order>,
-          useValue: {},
-        },
-        {
-          provide: UsersService,
-          useValue: {},
-        },
-        {
-          provide: OrdersService,
           useValue: {},
         },
       ],

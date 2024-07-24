@@ -21,12 +21,6 @@ export class OrderItem {
 
   @Column()
   price: number;
-  // @Column({
-  //   type: 'decimal',
-  //   transformer: new ColumnNumericTransformer(),
-  // })
-  // @Transform(({ value }) => value.toString())
-  // price: number;
 
   @CreateDateColumn({
     type: "timestamp",

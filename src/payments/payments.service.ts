@@ -6,8 +6,6 @@ import Stripe from "stripe";
 import { Repository } from "typeorm";
 import { OrderStatus } from "../orders/enums/order-status.enum";
 import { Order } from "../orders/order.entity";
-import { OrdersService } from "../orders/orders.service";
-import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class PaymentsService {
@@ -18,8 +16,7 @@ export class PaymentsService {
   constructor(
     @InjectRepository(Order)
     private readonly ordersRepository: Repository<Order>,
-    private readonly usersService: UsersService,
-    private readonly ordersService: OrdersService,
+
     private readonly configService: ConfigService,
   ) {
     this.stripe = new Stripe(

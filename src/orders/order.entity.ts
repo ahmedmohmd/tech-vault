@@ -1,4 +1,3 @@
-import { OrderItem } from "../orders/order-item.entity";
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { OrderItem } from "../orders/order-item.entity";
 import { User } from "../users/user.entity";
 import { OrderStatus } from "./enums/order-status.enum";
 
@@ -28,12 +28,6 @@ export class Order {
     default: 0,
   })
   total: number;
-  // @Column({
-  //   type: 'decimal',
-  //   transformer: new ColumnNumericTransformer(),
-  // })
-  // @Transform(({ value }) => value.toString())
-  // total: number;
 
   @CreateDateColumn({
     type: "timestamp",
@@ -58,6 +52,4 @@ export class Order {
 
   @Column({ default: 0 })
   discount: number;
-  // @Column({ type: 'decimal', default: 0 })
-  // discount: number;
 }
