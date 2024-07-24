@@ -18,7 +18,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { User } from "../common/decorators/user/user.decorator";
+import { User } from "../common/decorators/user.decorator";
 import { Serialize } from "../common/interceptors/serialize/serialize.decorator";
 import { Roles } from "../users/decorators/roles.decorator";
 import { Role } from "../users/enums/user-role.enum";

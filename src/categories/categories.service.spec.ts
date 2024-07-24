@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { Repository } from "typeorm";
+import { UsersService } from "../users/users.service";
 import { CategoriesService } from "./categories.service";
 import { Category } from "./category.entity";
 
@@ -11,6 +12,10 @@ describe("CategoriesService", () => {
       providers: [
         {
           provide: CategoriesService,
+          useValue: {},
+        },
+        {
+          provide: UsersService,
           useValue: {},
         },
         {

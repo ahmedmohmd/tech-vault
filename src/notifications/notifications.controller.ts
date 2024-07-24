@@ -13,11 +13,11 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
-import { Roles } from "src/users/decorators/roles.decorator";
-import { Role } from "src/users/enums/user-role.enum";
-import { RolesGuard } from "src/users/guards/roles.guard";
-import { User } from "../common/decorators/user/user.decorator";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
+import { User } from "../common/decorators/user.decorator";
+import { Roles } from "../users/decorators/roles.decorator";
+import { Role } from "../users/enums/user-role.enum";
+import { RolesGuard } from "../users/guards/roles.guard";
 import { NotificationsService } from "./notifications.service";
 
 @ApiBearerAuth()

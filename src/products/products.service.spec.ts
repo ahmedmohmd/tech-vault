@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { UsersService } from "../users/users.service";
 import { Repository } from "typeorm";
 import { CategoriesService } from "../categories/categories.service";
 import { FileUploadService } from "../file-upload/file-upload.service";
@@ -30,6 +31,10 @@ describe("ProductsService", () => {
         },
         {
           provide: CategoriesService,
+          useValue: {},
+        },
+        {
+          provide: UsersService,
           useValue: {},
         },
       ],

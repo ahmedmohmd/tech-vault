@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { Repository } from "typeorm";
+import { UsersService } from "../users/users.service";
 import { PromoCode } from "./promo-code.entity";
 import { PromoCodesService } from "./promo-codes.service";
 
@@ -11,6 +12,10 @@ describe("PromoCodesService", () => {
       providers: [
         {
           provide: PromoCodesService,
+          useValue: {},
+        },
+        {
+          provide: UsersService,
           useValue: {},
         },
         {

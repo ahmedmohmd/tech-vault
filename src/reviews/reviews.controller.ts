@@ -21,11 +21,11 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
-import { Roles } from "src/users/decorators/roles.decorator";
-import { Role } from "src/users/enums/user-role.enum";
-import { RolesGuard } from "src/users/guards/roles.guard";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { User } from "../common/decorators/user/user.decorator";
+import { User } from "../common/decorators/user.decorator";
+import { Roles } from "../users/decorators/roles.decorator";
+import { Role } from "../users/enums/user-role.enum";
+import { RolesGuard } from "../users/guards/roles.guard";
 import { CreateReviewDto } from "./dto/create-review.dto";
 import { UpdateReviewDto } from "./dto/update-review.dto";
 import { ReviewsService } from "./reviews.service";

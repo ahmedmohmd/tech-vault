@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { UsersService } from "../users/users.service";
 import { CategoriesController } from "./categories.controller";
 import { CategoriesService } from "./categories.service";
 
@@ -11,6 +12,10 @@ describe("CategoriesController", () => {
       providers: [
         {
           provide: CategoriesService,
+          useValue: {},
+        },
+        {
+          provide: UsersService,
           useValue: {},
         },
       ],

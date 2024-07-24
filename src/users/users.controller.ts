@@ -22,8 +22,8 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { UploadImage } from "../common/decorators/upload-image/upload-image.decorator";
-import { User } from "../common/decorators/user/user.decorator";
+import { UploadImage } from "../common/decorators/upload-image.decorator";
+import { User } from "../common/decorators/user.decorator";
 import { Serialize } from "../common/interceptors/serialize/serialize.decorator";
 import { Roles } from "./decorators/roles.decorator";
 import { EmailDto } from "./dto/email.dto";

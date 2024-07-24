@@ -19,8 +19,8 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { UploadImage } from "../common/decorators/upload-image/upload-image.decorator";
-import { User } from "../common/decorators/user/user.decorator";
+import { UploadImage } from "../common/decorators/upload-image.decorator";
+import { User } from "../common/decorators/user.decorator";
 import { AuthService } from "./auth.service";
 import { RequestPasswordResetDto } from "./dto/request-password-reset.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";

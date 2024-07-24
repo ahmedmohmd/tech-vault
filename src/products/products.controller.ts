@@ -23,12 +23,12 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
-import { Public } from "src/users/decorators/public.decorator";
-import { Roles } from "src/users/decorators/roles.decorator";
-import { Role } from "src/users/enums/user-role.enum";
-import { RolesGuard } from "src/users/guards/roles.guard";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { UploadImages } from "../common/decorators/upload-image/upload-images.decorator";
+import { UploadImages } from "../common/decorators/upload-images.decorator";
+import { Public } from "../users/decorators/public.decorator";
+import { Roles } from "../users/decorators/roles.decorator";
+import { Role } from "../users/enums/user-role.enum";
+import { RolesGuard } from "../users/guards/roles.guard";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { GetAllProductsQueryDto } from "./dto/get-all-products-query.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
