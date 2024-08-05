@@ -60,7 +60,7 @@ jobs:
 
   security:
     runs-on: ubuntu-latest
-    needs: [test, build, lint, format, install-dependencies]
+    needs: lint
     steps:
       - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
