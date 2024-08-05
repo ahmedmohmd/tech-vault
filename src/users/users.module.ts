@@ -11,13 +11,13 @@ import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 
 @Module({
-  imports: [
-    FileUploadModule,
-    MailModule,
-    TypeOrmModule.forFeature([User, UserImage, Email, Phone, Address]),
-  ],
-  providers: [UsersService],
-  controllers: [UsersController],
-  exports: [UsersService],
+	imports: [
+		FileUploadModule,
+		MailModule,
+		TypeOrmModule.forFeature([User, UserImage, Email, Phone, Address]),
+	],
+	providers: [UsersService],
+	controllers: [UsersController],
+	exports: [UsersService],
 })
 export class UsersModule {}

@@ -9,88 +9,88 @@ import { Review } from "./review.entity";
 
 @Injectable()
 export class ReviewsService {
-  constructor(
-    @InjectRepository(Review)
-    private readonly reviewsRepository: Repository<Review>,
-    private readonly usersService: UsersService,
-    private readonly productsService: ProductsService,
-  ) {}
+	constructor(
+		@InjectRepository(Review)
+		private readonly reviewsRepository: Repository<Review>,
+		private readonly usersService: UsersService,
+		private readonly productsService: ProductsService
+	) {}
 
-  public async createReview(
-    userId: number,
-    productId: number,
-    reviewData: CreateReviewDto,
-  ) {
-    const targetUser = await this.usersService.findUser(userId);
+	public async createReview(
+		userId: number,
+		productId: number,
+		reviewData: CreateReviewDto
+	) {
+		const targetUser = await this.usersService.findUser(userId);
 
-    if (!targetUser) {
-      throw new NotFoundException("User Not Found.");
-    }
+		if (!targetUser) {
+			throw new NotFoundException("User Not Found.");
+		}
 
-    const targetProduct = await this.productsService.getProduct(productId);
+		const targetProduct = await this.productsService.getProduct(productId);
 
-    if (!targetProduct) {
-      throw new NotFoundException("Product Not Found.");
-    }
+		if (!targetProduct) {
+			throw new NotFoundException("Product Not Found.");
+		}
 
-    const createdReview = this.reviewsRepository.create({
-      ...reviewData,
-      user: targetUser,
-      product: targetProduct,
-    });
+		const createdReview = this.reviewsRepository.create({
+			...reviewData,
+			user: targetUser,
+			product: targetProduct,
+		});
 
-    return await this.reviewsRepository.save(createdReview);
-  }
+		return await this.reviewsRepository.save(createdReview);
+	}
 
-  public async updateReview(
-    userId: number,
-    reviewId: number,
-    reviewData: UpdateReviewDto,
-  ) {
-    const targetUser = await this.usersService.findUser(userId);
+	public async updateReview(
+		userId: number,
+		reviewId: number,
+		reviewData: UpdateReviewDto
+	) {
+		const targetUser = await this.usersService.findUser(userId);
 
-    if (!targetUser) {
-      throw new NotFoundException("User Not Found.");
-    }
+		if (!targetUser) {
+			throw new NotFoundException("User Not Found.");
+		}
 
-    const targetReview = await this.reviewsRepository.findOne({
-      where: {
-        user: {
-          id: userId,
-        },
-        id: reviewId,
-      },
-    });
+		const targetReview = await this.reviewsRepository.findOne({
+			where: {
+				user: {
+					id: userId,
+				},
+				id: reviewId,
+			},
+		});
 
-    if (!targetReview) {
-      throw new NotFoundException("Review Not Found.");
-    }
+		if (!targetReview) {
+			throw new NotFoundException("Review Not Found.");
+		}
 
-    const updatedReview = Object.assign(targetReview, { ...reviewData });
+		const updatedReview = Object.assign(targetReview, { ...reviewData });
 
-    return await this.reviewsRepository.save(updatedReview);
-  }
+		return await this.reviewsRepository.save(updatedReview);
+	}
 
-  public async deleteReview(userId: number, reviewId: number) {
-    const targetUser = await this.usersService.findUser(userId);
+	public async deleteReview(userId: number, reviewId: number) {
+		const targetUser = await this.usersService.findUser(userId);
 
-    if (!targetUser) {
-      throw new NotFoundException("User Not Found.");
-    }
+		if (!targetUser) {
+			throw new NotFoundException("User Not Found.");
+		}
 
-    const targetReview = await this.reviewsRepository.findOne({
-      where: {
-        user: targetUser,
-        id: reviewId,
-      },
-    });
+		const targetReview = await this.reviewsRepository.findOne({
+			where: {
+				user: targetUser,
+				id: reviewId,
+			},
+		});
 
-    if (targetReview) {
-      throw new NotFoundException("Review Not Found.");
-    }
+		if (targetReview) {
+			throw new NotFoundException("Review Not Found.");
+		}
 
-    await this.reviewsRepository.remove(targetReview);
+		await this.reviewsRepository.remove(targetReview);
 
-    return;
-  }
+		return;
+	}
 }

@@ -7,65 +7,65 @@ import { Wishlist } from "./wishlist.entity";
 
 @Injectable()
 export class WishlistService {
-  constructor(
-    @InjectRepository(Wishlist)
-    private readonly wishlistRepository: Repository<Wishlist>,
-    private readonly usersService: UsersService,
-    private readonly productsService: ProductsService,
-  ) {}
+	constructor(
+		@InjectRepository(Wishlist)
+		private readonly wishlistRepository: Repository<Wishlist>,
+		private readonly usersService: UsersService,
+		private readonly productsService: ProductsService
+	) {}
 
-  public async addToWishlist(userId: number, productId: number) {
-    const targetUser = await this.usersService.findUser(userId);
-    if (!targetUser) {
-      throw new NotFoundException("User Not Found.");
-    }
+	public async addToWishlist(userId: number, productId: number) {
+		const targetUser = await this.usersService.findUser(userId);
+		if (!targetUser) {
+			throw new NotFoundException("User Not Found.");
+		}
 
-    const targetProduct = await this.productsService.getProduct(productId);
-    if (!targetProduct) {
-      throw new NotFoundException("Product Not Found.");
-    }
+		const targetProduct = await this.productsService.getProduct(productId);
+		if (!targetProduct) {
+			throw new NotFoundException("Product Not Found.");
+		}
 
-    const createdWishListItem = this.wishlistRepository.create({
-      product: targetProduct,
-      user: targetUser,
-    });
+		const createdWishListItem = this.wishlistRepository.create({
+			product: targetProduct,
+			user: targetUser,
+		});
 
-    return await this.wishlistRepository.save(createdWishListItem);
-  }
+		return await this.wishlistRepository.save(createdWishListItem);
+	}
 
-  public async removeFromWishlist(userId: number, productId: number) {
-    const targetWishlistItem = await this.wishlistRepository.findOne({
-      where: {
-        product: {
-          id: productId,
-        },
+	public async removeFromWishlist(userId: number, productId: number) {
+		const targetWishlistItem = await this.wishlistRepository.findOne({
+			where: {
+				product: {
+					id: productId,
+				},
 
-        user: {
-          id: userId,
-        },
-      },
-    });
+				user: {
+					id: userId,
+				},
+			},
+		});
 
-    if (!targetWishlistItem) {
-      throw new NotFoundException("Wishlist Not Found.");
-    }
+		if (!targetWishlistItem) {
+			throw new NotFoundException("Wishlist Not Found.");
+		}
 
-    return await this.wishlistRepository.remove(targetWishlistItem);
-  }
+		return await this.wishlistRepository.remove(targetWishlistItem);
+	}
 
-  public async viewWishlist(userId: number) {
-    const targetUser = await this.usersService.findUser(userId);
+	public async viewWishlist(userId: number) {
+		const targetUser = await this.usersService.findUser(userId);
 
-    if (!targetUser) {
-      throw new NotFoundException("User not Found.");
-    }
+		if (!targetUser) {
+			throw new NotFoundException("User not Found.");
+		}
 
-    return await this.wishlistRepository.find({
-      where: {
-        user: {
-          id: userId,
-        },
-      },
-    });
-  }
+		return await this.wishlistRepository.find({
+			where: {
+				user: {
+					id: userId,
+				},
+			},
+		});
+	}
 }

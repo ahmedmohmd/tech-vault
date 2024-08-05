@@ -1,34 +1,34 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+	Column,
+	CreateDateColumn,
+	Entity,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
 } from "typeorm";
 
 @Entity({
-  name: "users_images",
+	name: "users_images",
 })
 export class UserImage {
-  @PrimaryGeneratedColumn()
-  id: number;
+	@PrimaryGeneratedColumn()
+	id: number;
 
-  @Column()
-  url: string;
+	@Column()
+	url: string;
 
-  @Column({
-    nullable: true,
-    default: null,
-  })
-  imagePublicId: string;
+	@Column({
+		nullable: true,
+		default: null,
+	})
+	imagePublicId: string;
 
-  @CreateDateColumn({
-    type: "timestamp",
-  })
-  createdAt: Date;
+	@CreateDateColumn({
+		type: "timestamp",
+	})
+	createdAt: Date;
 
-  @UpdateDateColumn({
-    type: "timestamp",
-  })
-  updatedAt: Date;
+	@UpdateDateColumn({
+		type: "timestamp",
+	})
+	updatedAt: Date;
 }

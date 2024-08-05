@@ -40,4 +40,5 @@ database-design.dbml
 
 # Ignore Custome Files
 .env
-# docker-compose.yaml
+docker-compose.old*
+.dcc*

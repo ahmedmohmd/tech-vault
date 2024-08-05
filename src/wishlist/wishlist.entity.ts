@@ -4,12 +4,12 @@ import { User } from "../users/user.entity";
 
 @Entity()
 export class Wishlist {
-  @PrimaryGeneratedColumn()
-  id: number;
+	@PrimaryGeneratedColumn()
+	id: number;
 
-  @ManyToOne(() => User, (user) => user.wishlist)
-  user: User;
+	@ManyToOne(() => User, (user) => user.wishlist)
+	user: User;
 
-  @ManyToOne(() => Product, (product) => product.id)
-  product: Product;
+	@ManyToOne(() => Product, (product) => product.id)
+	product: Product;
 }

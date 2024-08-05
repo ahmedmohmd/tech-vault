@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "node_exporter"
+    static_configs:
+      - targets: ["node_exporter:9100"] # Replace with the address of your node_exporter instance
+
+
+  # - job_name: "nestjs"
+  #   static_configs:
+  #     - targets: ["http://localhost:8000/api/v1/metrics"] # Replace with the address of your NestJS application

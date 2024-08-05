@@ -9,50 +9,50 @@ import { AuthService } from "./auth.service";
 import { RandomTokenService } from "./random-token.service";
 
 describe("AuthService", () => {
-  let service: AuthService;
+	let service: AuthService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        {
-          provide: AuthService,
-          useValue: {},
-        },
-        {
-          provide: UsersService,
-          useValue: {},
-        },
-        {
-          provide: BcryptService,
-          useValue: {},
-        },
-        {
-          provide: MailService,
-          useValue: {},
-        },
-        {
-          provide: ConfigService,
-          useValue: {},
-        },
-        {
-          provide: JwtService,
-          useValue: {},
-        },
-        {
-          provide: RandomTokenService,
-          useValue: {},
-        },
-        {
-          provide: FileUploadService,
-          useValue: {},
-        },
-      ],
-    }).compile();
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [
+				{
+					provide: AuthService,
+					useValue: {},
+				},
+				{
+					provide: UsersService,
+					useValue: {},
+				},
+				{
+					provide: BcryptService,
+					useValue: {},
+				},
+				{
+					provide: MailService,
+					useValue: {},
+				},
+				{
+					provide: ConfigService,
+					useValue: {},
+				},
+				{
+					provide: JwtService,
+					useValue: {},
+				},
+				{
+					provide: RandomTokenService,
+					useValue: {},
+				},
+				{
+					provide: FileUploadService,
+					useValue: {},
+				},
+			],
+		}).compile();
 
-    service = module.get<AuthService>(AuthService);
-  });
+		service = module.get<AuthService>(AuthService);
+	});
 
-  it("should be defined", () => {
-    expect(service).toBeDefined();
-  });
+	it("should be defined", () => {
+		expect(service).toBeDefined();
+	});
 });

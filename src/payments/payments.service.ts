@@ -9,66 +9,66 @@ import { Order } from "../orders/order.entity";
 
 @Injectable()
 export class PaymentsService {
-  public readonly stripe: Stripe;
-  public readonly environment: paypal.core.SandboxEnvironment;
-  public readonly client: paypal.core.PayPalHttpClient;
+	public readonly stripe: Stripe;
+	public readonly environment: paypal.core.SandboxEnvironment;
+	public readonly client: paypal.core.PayPalHttpClient;
 
-  constructor(
-    @InjectRepository(Order)
-    private readonly ordersRepository: Repository<Order>,
+	constructor(
+		@InjectRepository(Order)
+		private readonly ordersRepository: Repository<Order>,
 
-    private readonly configService: ConfigService,
-  ) {
-    this.stripe = new Stripe(
-      this.configService.get<string>("STRIPE_SECRET_KEY"),
-      {
-        apiVersion: "2024-06-20",
-      },
-    );
-  }
+		private readonly configService: ConfigService
+	) {
+		this.stripe = new Stripe(
+			this.configService.get<string>("STRIPE_SECRET_KEY"),
+			{
+				apiVersion: "2024-06-20",
+			}
+		);
+	}
 
-  async createPaymentIntent(orderId: number): Promise<Stripe.PaymentIntent> {
-    const order = await this.ordersRepository.findOne({
-      where: {
-        id: orderId,
-      },
+	async createPaymentIntent(orderId: number): Promise<Stripe.PaymentIntent> {
+		const order = await this.ordersRepository.findOne({
+			where: {
+				id: orderId,
+			},
 
-      relations: ["user", "items", "items.product"],
-    });
+			relations: ["user", "items", "items.product"],
+		});
 
-    if (!order) {
-      throw new BadRequestException("Order not found");
-    }
+		if (!order) {
+			throw new BadRequestException("Order not found");
+		}
 
-    const orderTotalPrice =
-      order.total <= order.discount
-        ? 0
-        : Math.round(order.total - order.discount);
+		const orderTotalPrice =
+			order.total <= order.discount
+				? 0
+				: Math.round(order.total - order.discount);
 
-    const paymentIntent = await this.stripe.paymentIntents.create({
-      amount: orderTotalPrice * 100, // Stripe amount is in cents
-      currency: "usd",
-      metadata: { orderId: order.id.toString() },
-    });
+		const paymentIntent = await this.stripe.paymentIntents.create({
+			amount: orderTotalPrice * 100, // Stripe amount is in cents
+			currency: "usd",
+			metadata: { orderId: order.id.toString() },
+		});
 
-    return paymentIntent;
-  }
+		return paymentIntent;
+	}
 
-  async handleWebhook(event: Stripe.Event): Promise<void> {
-    if (event.type === "payment_intent.succeeded") {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      const orderId = paymentIntent.metadata.orderId;
+	async handleWebhook(event: Stripe.Event): Promise<void> {
+		if (event.type === "payment_intent.succeeded") {
+			const paymentIntent = event.data.object as Stripe.PaymentIntent;
+			const { orderId } = paymentIntent.metadata;
 
-      const order = await this.ordersRepository.findOne({
-        where: {
-          id: +orderId,
-        },
-      });
+			const order = await this.ordersRepository.findOne({
+				where: {
+					id: Number(orderId),
+				},
+			});
 
-      if (order) {
-        order.status = OrderStatus.PAID;
-        await this.ordersRepository.save(order);
-      }
-    }
-  }
+			if (order) {
+				order.status = OrderStatus.PAID;
+				await this.ordersRepository.save(order);
+			}
+		}
+	}
 }

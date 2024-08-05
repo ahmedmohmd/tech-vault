@@ -1,91 +1,134 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { Repository } from "typeorm";
+import { Logger } from "winston";
+import { MailService } from "../mail/mail.service";
+import { NotificationsService } from "../notifications/notifications.service";
 import { Category } from "./category.entity";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
 
 @Injectable()
 export class CategoriesService {
-  constructor(
-    @InjectRepository(Category)
-    private readonly categoriesRepository: Repository<Category>,
-  ) {}
+	constructor(
+		@InjectRepository(Category)
+		private readonly categoriesRepository: Repository<Category>,
+		@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+		private readonly mailService: MailService,
+		private readonly notificationsService: NotificationsService
+	) {}
 
-  public async getAllCategories() {
-    return await this.categoriesRepository.find({
-      order: {
-        name: "ASC",
-      },
-    });
-  }
+	public async getAllCategories() {
+		this.logger.info("Fetching all categories.");
 
-  public async getSingleCategory(categoryId: number) {
-    const isCategoryExists = await this.isCategoryExists(categoryId);
+		const allCategories = await this.categoriesRepository.find({
+			order: {
+				name: "ASC",
+			},
+		});
 
-    if (!isCategoryExists) {
-      throw new NotFoundException("Category not found.");
-    }
+		this.logger.info(
+			`Fetched ${allCategories.length} categories successfully.`
+		);
 
-    return await this.categoriesRepository.findOne({
-      where: {
-        id: categoryId,
-      },
-    });
-  }
+		return allCategories;
+	}
 
-  public async createCategory(categoryData: CreateCategoryDto) {
-    const createdCategory = this.categoriesRepository.create(categoryData);
+	public async getSingleCategory(categoryId: number) {
+		this.logger.info(`Fetching category with ID: ${categoryId}`);
+		const isCategoryExists = await this.isCategoryExists(categoryId);
 
-    const savedCategory = await this.categoriesRepository.save(createdCategory);
+		if (!isCategoryExists) {
+			this.logger.warn(`Category with ID ${categoryId} not found.`);
+			throw new NotFoundException("Category not found.");
+		}
 
-    return savedCategory;
-  }
+		const targetCategory = await this.categoriesRepository.findOne({
+			where: {
+				id: categoryId,
+			},
+		});
 
-  public async updateCategory(
-    categoryId: number,
-    categoryData: UpdateCategoryDto,
-  ) {
-    const isCategoryExists = await this.isCategoryExists(categoryId);
+		this.logger.info(`Fetched category with ID ${categoryId} successfully.`);
 
-    if (!isCategoryExists) {
-      throw new NotFoundException("Category not found.");
-    }
+		return targetCategory;
+	}
 
-    const targetCategory = await this.categoriesRepository.findOne({
-      where: {
-        id: categoryId,
-      },
-    });
+	public async createCategory(categoryData: CreateCategoryDto) {
+		this.logger.info(
+			`Creating a new category with data: ${JSON.stringify(categoryData)}`
+		);
 
-    const updatedCategory = Object.assign(targetCategory, categoryData);
+		const createdCategory = this.categoriesRepository.create(categoryData);
 
-    const savedCategory = await this.categoriesRepository.save(updatedCategory);
+		const savedCategory = await this.categoriesRepository.save(createdCategory);
+		this.logger.info(
+			`Category created successfully with ID: ${savedCategory.id}`
+		);
 
-    return savedCategory;
-  }
+		return savedCategory;
+	}
 
-  public async deleteCategory(categoryId: number) {
-    const isCategoryExists = await this.isCategoryExists(categoryId);
+	public async updateCategory(
+		categoryId: number,
+		categoryData: UpdateCategoryDto
+	) {
+		this.logger.info(
+			`Updating category with ID: ${categoryId} with data: ${JSON.stringify(categoryData)}`
+		);
 
-    if (!isCategoryExists) {
-      throw new NotFoundException("Category not found.");
-    }
+		const isCategoryExists = await this.isCategoryExists(categoryId);
 
-    const targetCategory = await this.categoriesRepository.findOne({
-      where: {
-        id: categoryId,
-      },
-    });
+		if (!isCategoryExists) {
+			this.logger.info(`Category with Id: ${categoryId} is not Found.`);
 
-    await this.categoriesRepository.remove(targetCategory);
-  }
+			throw new NotFoundException("Category not found.");
+		}
 
-  public async isCategoryExists(categoryId: number) {
-    return await this.categoriesRepository.exists({
-      where: {
-        id: categoryId,
-      },
-    });
-  }
+		const targetCategory = await this.categoriesRepository.findOne({
+			where: {
+				id: categoryId,
+			},
+		});
+
+		const updatedCategory = Object.assign(targetCategory, categoryData);
+
+		const savedCategory = await this.categoriesRepository.save(updatedCategory);
+		this.logger.info(
+			`Category updated successfully with ID: ${savedCategory.id}`
+		);
+
+		return savedCategory;
+	}
+
+	public async deleteCategory(categoryId: number) {
+		this.logger.info(`Attempting to delete category with ID: ${categoryId}`);
+		const isCategoryExists = await this.isCategoryExists(categoryId);
+
+		if (!isCategoryExists) {
+			this.logger.info(`Category with Id: ${categoryId} is not Found.`);
+			throw new NotFoundException("Category not found.");
+		}
+
+		const targetCategory = await this.categoriesRepository.findOne({
+			where: {
+				id: categoryId,
+			},
+		});
+
+		await this.categoriesRepository.remove(targetCategory);
+
+		this.logger.info(`Category with ID: ${categoryId} deleted successfully.`);
+
+		return;
+	}
+
+	public async isCategoryExists(categoryId: number) {
+		return await this.categoriesRepository.exists({
+			where: {
+				id: categoryId,
+			},
+		});
+	}
 }

@@ -1,46 +1,46 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+	Column,
+	CreateDateColumn,
+	Entity,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
 } from "typeorm";
 import { User } from "../users/user.entity";
 
 @Entity({
-  name: "addresses",
+	name: "addresses",
 })
 export class Address {
-  @PrimaryGeneratedColumn()
-  id: number;
+	@PrimaryGeneratedColumn()
+	id: number;
 
-  @Column()
-  city: string;
+	@Column()
+	city: string;
 
-  postCode: string;
+	postCode: string;
 
-  @Column()
-  country: string;
+	@Column()
+	country: string;
 
-  @Column({
-    default: true,
-  })
-  isPrimary: boolean;
+	@Column({
+		default: true,
+	})
+	isPrimary: boolean;
 
-  @ManyToOne(() => User, (user) => user.addresses, {
-    onDelete: "CASCADE",
-    onUpdate: "NO ACTION",
-  })
-  user: User;
+	@ManyToOne(() => User, (user) => user.addresses, {
+		onDelete: "CASCADE",
+		onUpdate: "NO ACTION",
+	})
+	user: User;
 
-  @CreateDateColumn({
-    type: "timestamp",
-  })
-  createdAt: Date;
+	@CreateDateColumn({
+		type: "timestamp",
+	})
+	createdAt: Date;
 
-  @UpdateDateColumn({
-    type: "timestamp",
-  })
-  updatedAt: Date;
+	@UpdateDateColumn({
+		type: "timestamp",
+	})
+	updatedAt: Date;
 }

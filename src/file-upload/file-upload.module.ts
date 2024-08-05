@@ -6,15 +6,15 @@ import { FileUploadController } from "./file-upload.controller";
 import { FileUploadService } from "./file-upload.service";
 
 @Module({
-  controllers: [FileUploadController],
-  providers: [FileUploadService],
-  imports: [
-    CloudinaryModule,
-    MulterModule.register({
-      storage: multer.memoryStorage(),
-    }),
-  ],
+	controllers: [FileUploadController],
+	providers: [FileUploadService],
+	imports: [
+		CloudinaryModule,
+		MulterModule.register({
+			storage: multer.memoryStorage(),
+		}),
+	],
 
-  exports: [FileUploadService],
+	exports: [FileUploadService],
 })
 export class FileUploadModule {}

@@ -9,14 +9,14 @@ import { ProductsController } from "./products.controller";
 import { ProductsService } from "./products.service";
 
 @Module({
-  controllers: [ProductsController],
-  imports: [
-    FileUploadModule,
-    TypeOrmModule.forFeature([Product, ProductImage]),
-    CategoriesModule,
-    UsersModule,
-  ],
-  providers: [ProductsService],
-  exports: [ProductsService],
+	controllers: [ProductsController],
+	imports: [
+		FileUploadModule,
+		TypeOrmModule.forFeature([Product, ProductImage]),
+		CategoriesModule,
+		UsersModule,
+	],
+	providers: [ProductsService],
+	exports: [ProductsService],
 })
 export class ProductsModule {}

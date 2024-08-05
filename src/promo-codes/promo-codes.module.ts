@@ -6,9 +6,9 @@ import { PromoCodesController } from "./promo-codes.controller";
 import { PromoCodesService } from "./promo-codes.service";
 
 @Module({
-  controllers: [PromoCodesController],
-  providers: [PromoCodesService],
-  imports: [TypeOrmModule.forFeature([PromoCode]), UsersModule],
-  exports: [PromoCodesService],
+	controllers: [PromoCodesController],
+	providers: [PromoCodesService],
+	imports: [TypeOrmModule.forFeature([PromoCode]), UsersModule],
+	exports: [PromoCodesService],
 })
 export class PromoCodesModule {}

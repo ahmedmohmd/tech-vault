@@ -5,35 +5,35 @@ import { OrderStatus } from "../enums/order-status.enum";
 import { OrderItem } from "../order-item.entity";
 
 export class OrderDto {
-  @Expose()
-  id: number;
+	@Expose()
+	id: number;
 
-  @Expose()
-  status: OrderStatus;
+	@Expose()
+	status: OrderStatus;
 
-  @Expose()
-  total: number;
+	@Expose()
+	total: number;
 
-  @OneToOne(() => Address)
-  @JoinColumn()
-  address: Address;
+	@OneToOne(() => Address)
+	@JoinColumn()
+	address: Address;
 
-  @Expose()
-  createdAt: Date;
+	@Expose()
+	createdAt: Date;
 
-  @Expose()
-  updatedAt: Date;
+	@Expose()
+	updatedAt: Date;
 
-  // @Transform(({ obj }) =>
-  //   obj.items.map((item) => ({
-  //     itemId: item.id,
-  //     productId: item.product.id,
-  //   })),
-  // )
-  @Expose()
-  items: OrderItem[];
+	// @Transform(({ obj }) =>
+	//   obj.items.map((item) => ({
+	//     itemId: item.id,
+	//     productId: item.product.id,
+	//   })),
+	// )
+	@Expose()
+	items: OrderItem[];
 
-  @Transform(({ obj }) => obj.user.id)
-  @Expose()
-  userId: number;
+	@Transform(({ obj }) => obj.user.id)
+	@Expose()
+	userId: number;
 }

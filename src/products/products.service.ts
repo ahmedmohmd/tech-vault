@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
+	BadRequestException,
+	Injectable,
+	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -16,257 +16,257 @@ import { Product } from "./product.entity";
 
 @Injectable()
 export class ProductsService {
-  constructor(
-    @InjectRepository(Product)
-    private readonly productsRepository: Repository<Product>,
-    @InjectRepository(ProductImage)
-    private readonly productsImagesRepository: Repository<ProductImage>,
-    private readonly fileUploadService: FileUploadService,
-    private readonly categoriesService: CategoriesService,
-  ) {}
+	constructor(
+		@InjectRepository(Product)
+		private readonly productsRepository: Repository<Product>,
+		@InjectRepository(ProductImage)
+		private readonly productsImagesRepository: Repository<ProductImage>,
+		private readonly fileUploadService: FileUploadService,
+		private readonly categoriesService: CategoriesService
+	) {}
 
-  public async getProduct(productId: number) {
-    const targetProduct = await this.productsRepository.findOne({
-      where: {
-        id: productId,
-      },
+	public async getProduct(productId: number) {
+		const targetProduct = await this.productsRepository.findOne({
+			where: {
+				id: productId,
+			},
 
-      relations: ["productScreenshots", "reviews", "category"],
-    });
+			relations: ["productScreenshots", "reviews", "category"],
+		});
 
-    if (!targetProduct) {
-      throw new NotFoundException("Product not Found!");
-    }
+		if (!targetProduct) {
+			throw new NotFoundException("Product not Found!");
+		}
 
-    return targetProduct;
-  }
+		return targetProduct;
+	}
 
-  public async getAllProducts(query: GetAllProductsQueryDto) {
-    if (query.category) {
-      const isCategoryExists = await this.categoriesService.isCategoryExists(
-        query.category,
-      );
+	public async getAllProducts(query: GetAllProductsQueryDto) {
+		if (query.category) {
+			const isCategoryExists = await this.categoriesService.isCategoryExists(
+				query.category
+			);
 
-      if (!isCategoryExists) {
-        throw new NotFoundException("Category not Found!");
-      }
-    }
+			if (!isCategoryExists) {
+				throw new NotFoundException("Category not Found!");
+			}
+		}
 
-    const queryBuilder = this.productsRepository
-      .createQueryBuilder("product")
-      .leftJoinAndSelect("product.productScreenshots", "productScreenshots")
-      .leftJoinAndSelect("product.reviews", "reviews");
+		const queryBuilder = this.productsRepository
+			.createQueryBuilder("product")
+			.leftJoinAndSelect("product.productScreenshots", "productScreenshots")
+			.leftJoinAndSelect("product.reviews", "reviews");
 
-    if (query.category) {
-      queryBuilder.where("product.categoryId = :categoryId", {
-        categoryId: query.category,
-      });
-    }
+		if (query.category) {
+			queryBuilder.where("product.categoryId = :categoryId", {
+				categoryId: query.category,
+			});
+		}
 
-    if (query.sortBy) {
-      queryBuilder.orderBy(`product.${query.sortBy}`, query.order || "ASC");
-    }
+		if (query.sortBy) {
+			queryBuilder.orderBy(`product.${query.sortBy}`, query.order || "ASC");
+		}
 
-    if (query.min_price) {
-      queryBuilder.andWhere(`product.prices <= :priceValue`, {
-        priceValue: query.min_price,
-      });
-    }
+		if (query.min_price) {
+			queryBuilder.andWhere(`product.prices <= :priceValue`, {
+				priceValue: query.min_price,
+			});
+		}
 
-    if (query.max_price) {
-      queryBuilder.andWhere(`product.prices >= :priceValue`, {
-        priceValue: query.max_price,
-      });
-    }
+		if (query.max_price) {
+			queryBuilder.andWhere(`product.prices >= :priceValue`, {
+				priceValue: query.max_price,
+			});
+		}
 
-    if (query.search) {
-      queryBuilder.andWhere(`product.name LIKE :searchTerm`, {
-        searchTerm: `%${query.search}%`,
-      });
-    }
+		if (query.search) {
+			queryBuilder.andWhere(`product.name LIKE :searchTerm`, {
+				searchTerm: `%${query.search}%`,
+			});
+		}
 
-    const allProducts = await queryBuilder.getCount();
+		const allProducts = await queryBuilder.getCount();
 
-    queryBuilder.limit(query.page_size || 12);
-    queryBuilder.offset(
-      ((query.page_number || 1) - 1) * (query.page_size || 12),
-    );
+		queryBuilder.limit(query.page_size || 12);
+		queryBuilder.offset(
+			((query.page_number || 1) - 1) * (query.page_size || 12)
+		);
 
-    const products = await queryBuilder.getMany();
+		const products = await queryBuilder.getMany();
 
-    return {
-      data: products,
-      page: +query.page_number || 1,
-      page_size: +query.page_size || 12,
-      total_pages: Math.round(allProducts / (query.page_size || 12)),
-      total_count: allProducts,
-    };
-  }
+		return {
+			data: products,
+			page: Number(query.page_number) || 1,
+			page_size: Number(query.page_size) || 12,
+			total_pages: Math.round(allProducts / (query.page_size || 12)),
+			total_count: allProducts,
+		};
+	}
 
-  public async createProduct(
-    productData: CreateProductDto,
-    productScreenshots: Array<Express.Multer.File>,
-  ) {
-    const isCategoryExists = await this.categoriesService.isCategoryExists(
-      productData.categoryId,
-    );
+	public async createProduct(
+		productData: CreateProductDto,
+		productScreenshots: Array<Express.Multer.File>
+	) {
+		const isCategoryExists = await this.categoriesService.isCategoryExists(
+			productData.categoryId
+		);
 
-    if (!isCategoryExists) {
-      throw new NotFoundException("Category not Found!");
-    }
+		if (!isCategoryExists) {
+			throw new NotFoundException("Category not Found!");
+		}
 
-    const targetCategory = await this.categoriesService.getSingleCategory(
-      productData.categoryId,
-    );
+		const targetCategory = await this.categoriesService.getSingleCategory(
+			productData.categoryId
+		);
 
-    const createdProduct = await this.productsRepository.create({
-      ...productData,
-      productScreenshots: [],
-      category: targetCategory,
-    });
+		const createdProduct = await this.productsRepository.create({
+			...productData,
+			productScreenshots: [],
+			category: targetCategory,
+		});
 
-    if (productScreenshots.length > 0) {
-      for (const screenshot of productScreenshots) {
-        const uploadedImage = await this.fileUploadService.uploadImage({
-          path: `e-commerce/images/products/${productData.name}`,
-          file: screenshot,
-        });
+		if (productScreenshots.length > 0) {
+			for (const screenshot of productScreenshots) {
+				const uploadedImage = await this.fileUploadService.uploadImage({
+					path: `e-commerce/images/products/${productData.name}`,
+					file: screenshot,
+				});
 
-        const createdImage = await this.productsImagesRepository.create({
-          imagePublicId: uploadedImage?.public_id,
-          url: uploadedImage?.secure_url,
-        });
+				const createdImage = await this.productsImagesRepository.create({
+					imagePublicId: uploadedImage?.public_id,
+					url: uploadedImage?.secure_url,
+				});
 
-        await this.productsImagesRepository.save(createdImage);
+				await this.productsImagesRepository.save(createdImage);
 
-        createdProduct.productScreenshots.push(createdImage);
-      }
-    }
+				createdProduct.productScreenshots.push(createdImage);
+			}
+		}
 
-    await this.productsRepository.save(createdProduct);
+		await this.productsRepository.save(createdProduct);
 
-    return createdProduct;
-  }
+		return createdProduct;
+	}
 
-  public async updateProduct(
-    productId: number,
-    productData?: UpdateProductDto,
-    productScreenshots?: Array<Express.Multer.File>,
-  ) {
-    const targetProduct = await this.productsRepository.findOne({
-      where: {
-        id: productId,
-      },
+	public async updateProduct(
+		productId: number,
+		productData?: UpdateProductDto,
+		productScreenshots?: Array<Express.Multer.File>
+	) {
+		const targetProduct = await this.productsRepository.findOne({
+			where: {
+				id: productId,
+			},
 
-      relations: ["productScreenshots", "reviews", "category"],
-    });
+			relations: ["productScreenshots", "reviews", "category"],
+		});
 
-    if (!targetProduct) {
-      throw new NotFoundException("Product not Found.");
-    }
+		if (!targetProduct) {
+			throw new NotFoundException("Product not Found.");
+		}
 
-    const updatedProduct = Object.assign(targetProduct, { ...productData });
+		const updatedProduct = Object.assign(targetProduct, { ...productData });
 
-    if (productScreenshots?.length > 0) {
-      const existingScreenshotsCount =
-        targetProduct?.productScreenshots?.length;
-      const newScreenshotsCount = productScreenshots.length;
+		if (productScreenshots?.length > 0) {
+			const existingScreenshotsCount =
+				targetProduct?.productScreenshots?.length;
+			const newScreenshotsCount = productScreenshots.length;
 
-      if (existingScreenshotsCount + newScreenshotsCount > 4) {
-        throw new BadRequestException(
-          "Product can have a maximum of 4 image screenshots.",
-        );
-      }
+			if (existingScreenshotsCount + newScreenshotsCount > 4) {
+				throw new BadRequestException(
+					"Product can have a maximum of 4 image screenshots."
+				);
+			}
 
-      for (const file of productScreenshots) {
-        const uploadedImage = await this.fileUploadService.uploadImage({
-          path: `e-commerce/images/products/${updatedProduct.name}`,
-          file,
-        });
+			for (const file of productScreenshots) {
+				const uploadedImage = await this.fileUploadService.uploadImage({
+					path: `e-commerce/images/products/${updatedProduct.name}`,
+					file,
+				});
 
-        const createdImage = this.productsImagesRepository.create({
-          imagePublicId: uploadedImage?.public_id,
-          url: uploadedImage?.secure_url,
-        });
+				const createdImage = this.productsImagesRepository.create({
+					imagePublicId: uploadedImage?.public_id,
+					url: uploadedImage?.secure_url,
+				});
 
-        const savedProductScreenshot =
-          await this.productsImagesRepository.save(createdImage);
+				const savedProductScreenshot =
+					await this.productsImagesRepository.save(createdImage);
 
-        updatedProduct.productScreenshots.push(savedProductScreenshot);
-      }
-    }
+				updatedProduct.productScreenshots.push(savedProductScreenshot);
+			}
+		}
 
-    const savedProduct = await this.productsRepository.save(updatedProduct);
+		const savedProduct = await this.productsRepository.save(updatedProduct);
 
-    return savedProduct;
-  }
+		return savedProduct;
+	}
 
-  public async deleteProduct(productId: number) {
-    const targetProduct = await this.productsRepository.findOne({
-      where: {
-        id: productId,
-      },
+	public async deleteProduct(productId: number) {
+		const targetProduct = await this.productsRepository.findOne({
+			where: {
+				id: productId,
+			},
 
-      relations: ["productScreenshots"],
-    });
+			relations: ["productScreenshots"],
+		});
 
-    if (!targetProduct) {
-      throw new NotFoundException("Product not Found.");
-    }
+		if (!targetProduct) {
+			throw new NotFoundException("Product not Found.");
+		}
 
-    if (targetProduct.productScreenshots?.length > 0) {
-      for (const image of targetProduct.productScreenshots) {
-        await this.fileUploadService.removeImage(image.imagePublicId);
-      }
-    }
+		if (targetProduct.productScreenshots?.length > 0) {
+			for (const image of targetProduct.productScreenshots) {
+				await this.fileUploadService.removeImage(image.imagePublicId);
+			}
+		}
 
-    await this.productsRepository.remove(targetProduct);
+		await this.productsRepository.remove(targetProduct);
 
-    return;
-  }
+		return;
+	}
 
-  public async isProductScreenshotExists(screenshotId: number) {
-    return await this.productsImagesRepository.exists({
-      where: {
-        id: screenshotId,
-      },
-    });
-  }
+	public async isProductScreenshotExists(screenshotId: number) {
+		return await this.productsImagesRepository.exists({
+			where: {
+				id: screenshotId,
+			},
+		});
+	}
 
-  public async deleteProductScreenshot(productId: number, imageId: number) {
-    const targetProduct = await this.productsRepository.findOne({
-      where: {
-        id: productId,
-      },
+	public async deleteProductScreenshot(productId: number, imageId: number) {
+		const targetProduct = await this.productsRepository.findOne({
+			where: {
+				id: productId,
+			},
 
-      relations: ["productScreenshots"],
-    });
+			relations: ["productScreenshots"],
+		});
 
-    if (!targetProduct) {
-      throw new NotFoundException("Product not Found.");
-    }
+		if (!targetProduct) {
+			throw new NotFoundException("Product not Found.");
+		}
 
-    const isProductScreenshotExists =
-      await this.isProductScreenshotExists(imageId);
+		const isProductScreenshotExists =
+			await this.isProductScreenshotExists(imageId);
 
-    if (!isProductScreenshotExists) {
-      throw new NotFoundException("Product Screenshot not Found!");
-    }
+		if (!isProductScreenshotExists) {
+			throw new NotFoundException("Product Screenshot not Found!");
+		}
 
-    const targetProductScreenshot = await this.productsImagesRepository.findOne(
-      {
-        where: {
-          id: imageId,
-        },
-      },
-    );
+		const targetProductScreenshot = await this.productsImagesRepository.findOne(
+			{
+				where: {
+					id: imageId,
+				},
+			}
+		);
 
-    await this.fileUploadService.removeImage(
-      targetProductScreenshot.imagePublicId,
-    );
+		await this.fileUploadService.removeImage(
+			targetProductScreenshot.imagePublicId
+		);
 
-    await this.productsImagesRepository.remove(targetProductScreenshot);
+		await this.productsImagesRepository.remove(targetProductScreenshot);
 
-    return;
-  }
+		return;
+	}
 }

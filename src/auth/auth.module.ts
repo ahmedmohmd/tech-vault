@@ -13,22 +13,22 @@ import { GoogleStrategy } from "./strategies/google.strategy";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 
 @Module({
-  controllers: [AuthController],
-  providers: [AuthService, RandomTokenService, JwtStrategy, GoogleStrategy],
-  imports: [
-    UsersModule,
-    BcryptModule,
-    MailModule,
-    PassportModule,
-    FileUploadModule,
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>("JWT_SECRET"),
-        signOptions: { expiresIn: "1h" },
-      }),
+	controllers: [AuthController],
+	providers: [AuthService, RandomTokenService, JwtStrategy, GoogleStrategy],
+	imports: [
+		UsersModule,
+		BcryptModule,
+		MailModule,
+		PassportModule,
+		FileUploadModule,
+		JwtModule.registerAsync({
+			useFactory: (configService: ConfigService) => ({
+				secret: configService.get<string>("JWT_SECRET"),
+				signOptions: { expiresIn: "1h" },
+			}),
 
-      inject: [ConfigService],
-    }),
-  ],
+			inject: [ConfigService],
+		}),
+	],
 })
 export class AuthModule {}

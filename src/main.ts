@@ -6,35 +6,35 @@ import helmet from "helmet";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: "*",
-    },
-  });
+	const app = await NestFactory.create(AppModule, {
+		cors: {
+			origin: "*",
+		},
+	});
 
-  app.use(helmet());
+	app.use(helmet());
 
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: "1",
-  });
-  app.setGlobalPrefix("api");
-  app.useGlobalPipes(new ValidationPipe());
+	app.enableVersioning({
+		type: VersioningType.URI,
+		defaultVersion: "1",
+	});
+	app.setGlobalPrefix("api");
+	app.useGlobalPipes(new ValidationPipe());
 
-  // Documentation
-  const config = new DocumentBuilder()
-    .addBearerAuth()
-    .setTitle("Tech Vault")
-    .setDescription("The Tech Vault (E-Commerce) API Description.")
-    .setVersion("1.0")
-    .build();
+	// Documentation
+	const config = new DocumentBuilder()
+		.addBearerAuth()
+		.setTitle("Tech Vault")
+		.setDescription("The Tech Vault (E-Commerce) API Description.")
+		.setVersion("1.0")
+		.build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document),
-    {
-      jsonDocumentUrl: "swagger/json",
-    };
+	const document = SwaggerModule.createDocument(app, config);
+	SwaggerModule.setup("api", app, document),
+		{
+			jsonDocumentUrl: "swagger/json",
+		};
 
-  await app.listen(8000);
+	await app.listen(8000);
 }
 bootstrap();

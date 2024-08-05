@@ -8,13 +8,13 @@ import { OrdersController } from "./orders.controller";
 import { OrdersService } from "./orders.service";
 
 @Module({
-  controllers: [OrdersController],
-  providers: [OrdersService],
-  exports: [OrdersService],
-  imports: [
-    UsersModule,
-    ProductsModule,
-    TypeOrmModule.forFeature([Order, OrderItem]),
-  ],
+	controllers: [OrdersController],
+	providers: [OrdersService],
+	exports: [OrdersService],
+	imports: [
+		UsersModule,
+		ProductsModule,
+		TypeOrmModule.forFeature([Order, OrderItem]),
+	],
 })
 export class OrdersModule {}
